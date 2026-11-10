@@ -14,7 +14,7 @@ Une démonstration d'exécution complète (≈ 2 min, 1280×720) est disponible 
 
 Elle parcourt : accueil, catalogue et filtres, fiche produit (favoris + panier), panier,
 connexion client, commande et confirmation, puis le back-office administrateur
-(dashboard, produits, commandes).
+(dashboard, produits, commandes, utilisateurs et attribution des rôles).
 
 Aperçu (première image) : `demo/nova-demo-poster.jpg`
 
