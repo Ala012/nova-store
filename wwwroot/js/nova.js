@@ -160,22 +160,6 @@
         });
     }
 
-    /* ---------- Demo accounts ---------- */
-    function initDemoAccounts() {
-        $$('[data-demo-email]').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                var form = btn.closest('form');
-                if (!form) return;
-                var email = form.querySelector('input[type="email"], input[name="Email"]');
-                var pass = form.querySelector('input[name="Password"]');
-                if (email) email.value = btn.dataset.demoEmail || '';
-                if (pass) pass.value = btn.dataset.demoPassword || '';
-                if (email) email.dispatchEvent(new Event('input', { bubbles: true }));
-                toast('Compte démo pré-rempli. Cliquez sur « Se connecter ».', 'info');
-            });
-        });
-    }
-
     /* ---------- Newsletter ---------- */
     function initNewsletter() {
         var form = $('#newsletterForm');
@@ -415,7 +399,6 @@
         initToasts();
         initConfirm();
         initPasswords();
-        initDemoAccounts();
         initNewsletter();
         initSteppers();
         initStarPickers();

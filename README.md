@@ -6,7 +6,21 @@ Projet **ASP.NET Core MVC** ciblant **.NET 10**, base de données **MySQL / Mari
 
 ---
 
-## 1. Lancer le projet
+## 1. Démonstration vidéo
+
+Une démonstration d'exécution complète (≈ 2 min, 1280×720) est disponible ici :
+
+**`demo/nova-demo.mp4`**
+
+Elle parcourt : accueil, catalogue et filtres, fiche produit (favoris + panier), panier,
+connexion client, commande et confirmation, puis le back-office administrateur
+(dashboard, produits, commandes).
+
+Aperçu (première image) : `demo/nova-demo-poster.jpg`
+
+---
+
+## 2. Lancer le projet
 
 ### Prérequis
 
@@ -56,7 +70,7 @@ Au premier démarrage, le schéma est créé et la base est alimentée automatiq
 
 ---
 
-## 2. Fonctionnalités
+## 3. Fonctionnalités
 
 ### Base TP2 / TP3
 
@@ -97,7 +111,7 @@ Au premier démarrage, le schéma est créé et la base est alimentée automatiq
 
 ---
 
-## 3. Architecture
+## 4. Architecture
 
 ```text
 TP_Product/
@@ -134,7 +148,7 @@ TP_Product/
 
 ---
 
-## 4. Parcours de test rapide
+## 5. Parcours de test rapide
 
 1. Accueil → « Explorer la boutique ».
 2. Filtrer par catégorie / prix, changer de page, trier.
@@ -146,7 +160,7 @@ TP_Product/
 
 ---
 
-## 5. Remarques
+## 6. Remarques
 
 - Le projet cible `net10.0` ; un SDK preview peut afficher l'avertissement `NETSDK1057`
   (sans impact sur le fonctionnement).

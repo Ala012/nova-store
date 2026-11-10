@@ -2756,9 +2756,25 @@ a.wish-btn-lg:hover { background: #ec4899; color: #fff; border-color: #ec4899; }
 /* ==========================================================================
    Responsive
    ========================================================================== */
+@media (max-width: 1499.98px) {
+    .nova-navbar .container { gap: 10px; }
+    .nova-search { min-width: 168px; }
+    .nova-nav-links .nav-link { padding-inline: 8px !important; }
+    .nav-auth-link { padding: 7px 10px; }
+    .nova-actions { gap: 4px; }
+}
+
+@media (max-width: 1279.98px) {
+    .nova-navbar .container { gap: 8px; }
+    .nova-search { min-width: 160px; }
+    .nova-nav-links .nav-link { padding-inline: 8px !important; font-size: 13px; }
+    .nav-auth-link { padding: 7px 10px; }
+}
+
 @media (max-width: 1199.98px) {
     .nova-navbar .container { flex-wrap: wrap; }
-    .nova-search { order: 3; min-width: 100%; margin-top: 10px; }
+    .nova-search { order: 3; flex: 1 0 100%; width: 100%; min-width: 0; margin-top: 10px; }
+    .nova-navbar .navbar-collapse { flex-wrap: wrap; }
     .nova-actions { margin-left: auto; }
     .product-grid-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .footer-top { grid-template-columns: 1.4fr 1fr 1fr; }
