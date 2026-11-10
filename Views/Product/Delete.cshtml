@@ -1,0 +1,29 @@
+@model Product
+@{
+    ViewData["Title"] = "Supprimer le produit";
+    var imagePath = Url.Content("~/images/" + Model.Image);
+}
+
+<div class="container admin-page">
+    <div class="confirm-card">
+        <span class="confirm-icon"><i class="bi bi-trash3"></i></span>
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Suppression définitive</span>
+        <h1>Supprimer ce produit ?</h1>
+        <p>Cette action est irréversible. Le produit sera retiré du catalogue, des favoris et du panier des clients.</p>
+
+        <div class="confirm-product">
+            <img src="@imagePath" alt="@Model.Name" />
+            <div>
+                <strong>@Model.Name</strong>
+                <span>@Model.Category?.CategoryName · @Money.Format(Model.Price)</span>
+                <small>Stock actuel : @Model.QteStock unité(s)</small>
+            </div>
+        </div>
+
+        <form asp-controller="Product" asp-action="Delete" asp-route-id="@Model.ProductId" method="post" class="confirm-actions">
+            @Html.AntiForgeryToken()
+            <a class="btn btn-ghost" asp-controller="Product" asp-action="Manage">Annuler</a>
+            <button type="submit" class="btn btn-danger-soft"><i class="bi bi-trash3"></i> Oui, supprimer</button>
+        </form>
+    </div>
+</div>

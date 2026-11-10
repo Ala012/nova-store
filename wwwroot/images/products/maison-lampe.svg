@@ -1,0 +1,23 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="shade" x1="128" y1="96" x2="272" y2="212" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe3b0"/><stop offset=".5" stop-color="#ffb547"/><stop offset="1" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="stem" x1="196" y1="200" x2="212" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4a4468"/><stop offset="1" stop-color="#241d3d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(200 186) scale(130)">
+      <stop stop-color="#ffcf6b" stop-opacity=".55"/><stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="200" cy="344" rx="92" ry="14" fill="#241a55" opacity=".13"/>
+  <circle cx="200" cy="190" r="130" fill="url(#glow)"/>
+  <path d="M140 104h120l30 108c4 14-6 26-20 26H130c-14 0-24-12-20-26l30-108z" fill="url(#shade)"/>
+  <path d="M140 104h120l8 30H132l8-30z" fill="#fff" opacity=".3"/>
+  <path d="M118 238h164c8 0 14 6 14 14s-6 14-14 14H118c-8 0-14-6-14-14s6-14 14-14z" fill="#e08a1e"/>
+  <rect x="192" y="264" width="16" height="48" rx="8" fill="url(#stem)"/>
+  <path d="M146 326c0-12 8-20 20-20h68c12 0 20 8 20 20 0 8-6 12-14 12h-80c-8 0-14-4-14-12z" fill="#2a2440"/>
+  <ellipse cx="200" cy="330" rx="54" ry="9" fill="#4a4468"/>
+  <circle cx="200" cy="286" r="4" fill="#ffb547"/>
+  <path d="M160 130c10-8 24-12 38-12" stroke="#fff" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
+</svg>

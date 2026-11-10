@@ -1,0 +1,81 @@
+@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityRole>
+@{
+    ViewData["Title"] = "Rôles & accès";
+    var counts = ViewBag.UserCounts as Dictionary<string, int> ?? new Dictionary<string, int>();
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Rôles &amp; accès</span>
+            </nav>
+            <h1>Rôles &amp; <span class="grad-text">permissions</span></h1>
+            <p>Gérez les niveaux d'accès et les utilisateurs de la plateforme.</p>
+        </div>
+        <a class="btn btn-gradient" asp-controller="Admin" asp-action="CreateRole"><i class="bi bi-plus-lg"></i> Nouveau rôle</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state empty-state-lg">
+            <span class="empty-icon"><i class="bi bi-shield-lock"></i></span>
+            <h3>Aucun rôle configuré</h3>
+            <p>Créez votre premier rôle pour commencer à gérer les accès.</p>
+            <a class="btn btn-gradient" asp-controller="Admin" asp-action="CreateRole">Créer un rôle</a>
+        </div>
+    }
+    else
+    {
+        <div class="role-grid">
+            @foreach (var role in Model)
+            {
+                var count = counts.TryGetValue(role.Name ?? "", out var c) ? c : 0;
+                var isAdmin = role.Name == "Admin";
+                <article class="role-card reveal">
+                    <div class="role-card-top">
+                        <span class="role-icon @(isAdmin ? "role-icon-admin" : role.Name == "Manager" ? "role-icon-manager" : "")">
+                            <i class="bi @(isAdmin ? "bi-shield-fill-check" : role.Name == "Manager" ? "bi-briefcase" : "bi-person")"></i>
+                        </span>
+                        <span class="role-users"><i class="bi bi-people"></i> @count utilisateur@(count > 1 ? "s" : "")</span>
+                    </div>
+                    <h3>@role.Name</h3>
+                    <p>
+                        @if (isAdmin)
+                        {
+                            <span>Accès complet à la plateforme, aux rôles et aux utilisateurs.</span>
+                        }
+                        else if (role.Name == "Manager")
+                        {
+                            <span>Gestion du catalogue, des commandes et du tableau de bord.</span>
+                        }
+                        else
+                        {
+                            <span>Accès à la boutique, au panier et au suivi des commandes.</span>
+                        }
+                    </p>
+                    <div class="role-card-actions">
+                        <a class="btn btn-ghost btn-sm" asp-controller="Admin" asp-action="EditRole" asp-route-id="@role.Id">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        <a class="btn btn-ghost btn-sm" asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@role.Id">
+                            <i class="bi bi-people"></i> Utilisateurs
+                        </a>
+                        @if (!isAdmin)
+                        {
+                            <form asp-controller="Admin" asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger-soft btn-sm" data-confirm="Supprimer définitivement ce rôle ?">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>

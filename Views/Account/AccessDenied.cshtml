@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Accès refusé";
+}
+
+<div class="container forbidden-page">
+    <div class="forbidden-card">
+        <span class="forbidden-code">403</span>
+        <span class="forbidden-icon"><i class="bi bi-shield-x"></i></span>
+        <h1>Accès <span class="grad-text">refusé</span></h1>
+        <p>Vous n'avez pas les permissions nécessaires pour accéder à cette page. Contactez un administrateur si vous pensez qu'il s'agit d'une erreur.</p>
+        <div class="forbidden-actions">
+            <a class="btn btn-gradient" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Retour à l'accueil</a>
+            <a class="btn btn-ghost" asp-controller="Account" asp-action="Profile"><i class="bi bi-person"></i> Mon profil</a>
+        </div>
+    </div>
+</div>

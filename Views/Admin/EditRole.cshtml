@@ -1,0 +1,74 @@
+@model EditRoleViewModel
+@{
+    ViewData["Title"] = "Modifier le rôle";
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Admin" asp-action="ListRoles">Rôles</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>@Model.RoleName</span>
+            </nav>
+            <h1>Modifier le <span class="grad-text">rôle</span></h1>
+            <p>Renommez le rôle et consultez les utilisateurs qui y sont rattachés.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Admin" asp-action="ListRoles"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <div class="admin-form admin-form-narrow">
+        <form asp-controller="Admin" asp-action="EditRole" method="post" class="panel">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <label asp-for="RoleName" class="form-label"></label>
+            <input asp-for="RoleName" class="form-control form-control-lg" disabled="@(Model.RoleName == "Admin")" />
+            <span asp-validation-for="RoleName" class="text-danger small"></span>
+            @if (Model.RoleName == "Admin")
+            {
+                <p class="field-hint">Le rôle Administrateur ne peut pas être renommé.</p>
+            }
+
+            <div class="form-actions">
+                <a class="btn btn-ghost" asp-controller="Admin" asp-action="ListRoles">Annuler</a>
+                <button type="submit" class="btn btn-gradient"><i class="bi bi-check2"></i> Enregistrer</button>
+            </div>
+        </form>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge"><i class="bi bi-people"></i></span>
+                <div>
+                    <h4>Utilisateurs dans ce rôle</h4>
+                    <p>@Model.Users.Count utilisateur(s) rattaché(s).</p>
+                </div>
+                <a class="btn btn-ghost btn-sm" asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@Model.Id">
+                    <i class="bi bi-pencil-square"></i> Gérer
+                </a>
+            </div>
+
+            @if (Model.Users.Any())
+            {
+                <div class="user-chip-list">
+                    @foreach (var userName in Model.Users)
+                    {
+                        <span class="user-chip-static">
+                            <span class="review-avatar" style="--i:#6d5efc">@DisplayText.Initials(userName)</span>
+                            @userName
+                        </span>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">Aucun utilisateur n'est encore rattaché à ce rôle.</p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

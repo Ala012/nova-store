@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Page introuvable";
+    var message = ViewBag.ErrorMessage as string;
+}
+
+<div class="container forbidden-page">
+    <div class="forbidden-card">
+        <span class="forbidden-code">404</span>
+        <span class="forbidden-icon"><i class="bi bi-compass"></i></span>
+        <h1>Page <span class="grad-text">introuvable</span></h1>
+        <p>@(string.IsNullOrWhiteSpace(message) ? "La page que vous recherchez n'existe pas ou a été déplacée." : message)</p>
+        <div class="forbidden-actions">
+            <a class="btn btn-gradient" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Accueil</a>
+            <a class="btn btn-ghost" asp-controller="Product" asp-action="Index"><i class="bi bi-bag"></i> Boutique</a>
+        </div>
+    </div>
+</div>

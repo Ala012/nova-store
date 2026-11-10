@@ -1,0 +1,123 @@
+@model List<CartItem>
+@{
+    ViewData["Title"] = "Mon panier";
+    var subtotal = (decimal)(ViewBag.Subtotal ?? 0m);
+    var shipping = subtotal >= 299m ? 0m : 7m;
+    var total = subtotal + shipping;
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line">
+            <a asp-controller="Home" asp-action="Index">Accueil</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Panier</span>
+        </nav>
+        <div class="page-hero-row">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Votre sélection</span>
+                <h1>Mon <span class="grad-text">panier</span></h1>
+                <p>@Model.Sum(i => i.Quantity) article(s) prêt(s) à être expédié(s).</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container cart-layout">
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state empty-state-lg cart-empty">
+            <span class="empty-icon"><i class="bi bi-bag"></i></span>
+            <h3>Votre panier est vide</h3>
+            <p>Partez à la découverte de nos produits et faites-vous plaisir.</p>
+            <a class="btn btn-gradient btn-lg" asp-controller="Product" asp-action="Index">Découvrir la boutique <i class="bi bi-arrow-right"></i></a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-main">
+            <div class="cart-list">
+                @foreach (var item in Model)
+                {
+                    <article class="cart-row" data-cart-row="@item.ProductId">
+                        <a class="cart-thumb" asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId">
+                            <img src="@Url.Content("~/images/" + item.Image)" alt="@item.Name" />
+                        </a>
+                        <div class="cart-info">
+                            <span class="product-cat">@item.CategoryName</span>
+                            <a class="cart-name" asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId">@item.Name</a>
+                            <div class="cart-unit">
+                                <span>@Money.Format(item.Price)</span>
+                                @if (item.OldPrice.HasValue && item.OldPrice > item.Price)
+                                {
+                                    <s>@Money.Format(item.OldPrice.Value)</s>
+                                }
+                            </div>
+                            <span class="cart-stock"><i class="bi bi-check2-circle"></i> En stock (@item.Stock disponibles)</span>
+                        </div>
+                        <div class="cart-qty">
+                            <button type="button" class="qty-btn" data-cart-action="minus" data-id="@item.ProductId" aria-label="Diminuer la quantité">
+                                <i class="bi bi-dash"></i>
+                            </button>
+                            <span class="qty-value" data-cart-qty>@item.Quantity</span>
+                            <button type="button" class="qty-btn" data-cart-action="plus" data-id="@item.ProductId" aria-label="Augmenter la quantité">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                        <div class="cart-line">
+                            <strong data-cart-line>@Money.Format(item.LineTotal)</strong>
+                            <button type="button" class="cart-remove" data-cart-action="remove" data-id="@item.ProductId" aria-label="Retirer l'article">
+                                <i class="bi bi-trash3"></i> Retirer
+                            </button>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <div class="cart-links">
+                <a class="link-arrow" asp-controller="Product" asp-action="Index"><i class="bi bi-arrow-left"></i> Continuer mes achats</a>
+                <form asp-controller="Panier" asp-action="Clear" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="link-danger" data-confirm="Vider entièrement votre panier ?">
+                        <i class="bi bi-x-circle"></i> Vider le panier
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <aside class="cart-summary" data-cart-summary data-free-shipping="299" data-shipping="7">
+            <h3>Récapitulatif</h3>
+            <div class="summary-row">
+                <span>Sous-total</span>
+                <strong data-cart-subtotal>@Money.Format(subtotal)</strong>
+            </div>
+            <div class="summary-row">
+                <span>Livraison</span>
+                <strong data-cart-shipping>@(shipping == 0 ? "Offerte" : Money.Format(shipping))</strong>
+            </div>
+            <div class="summary-note">
+                <i class="bi bi-truck"></i>
+                <span>
+                    @if (shipping == 0)
+                    {
+                        <span>Vous bénéficiez de la <strong>livraison offerte</strong>.</span>
+                    }
+                    else
+                    {
+                        <span>Plus que <strong>@Money.Format(299m - subtotal)</strong> pour la livraison offerte.</span>
+                    }
+                </span>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <strong data-cart-total>@Money.Format(total)</strong>
+            </div>
+            <a class="btn btn-gradient btn-lg w-100" asp-controller="Panier" asp-action="Checkout">
+                Passer la commande <i class="bi bi-arrow-right"></i>
+            </a>
+            <div class="summary-secure">
+                <i class="bi bi-shield-lock"></i> Paiement sécurisé · Retours gratuits 30 jours
+            </div>
+        </aside>
+    }
+</div>

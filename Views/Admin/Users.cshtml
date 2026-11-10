@@ -1,0 +1,65 @@
+@model List<AdminUserItem>
+@{
+    ViewData["Title"] = "Utilisateurs";
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Admin" asp-action="ListRoles">Rôles</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Utilisateurs</span>
+            </nav>
+            <h1>Tous les <span class="grad-text">utilisateurs</span></h1>
+            <p>Consultez les comptes et leurs rôles sur la plateforme.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Admin" asp-action="ListRoles"><i class="bi bi-shield-lock"></i> Gérer les rôles</a>
+    </div>
+
+    <div class="table-card">
+        <div class="table-toolbar">
+            <span class="table-count">@Model.Count compte@(Model.Count > 1 ? "s" : "")</span>
+            <span class="text-muted small">Les rôles se gèrent depuis la page « Rôles &amp; permissions ».</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table nova-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <th>E-mail</th>
+                        <th>Rôles</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="customer-cell">
+                                    <span class="review-avatar" style="--i:#6d5efc">@DisplayText.Initials(user.Email)</span>
+                                    <strong>@user.Email.Split('@')[0]</strong>
+                                </div>
+                            </td>
+                            <td>@user.Email</td>
+                            <td>
+                                @foreach (var role in user.Roles)
+                                {
+                                    <span class="role-badge role-badge-sm">@role</span>
+                                }
+                                @if (!user.Roles.Any())
+                                {
+                                    <span class="text-muted small">Aucun rôle</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <a class="icon-btn icon-btn-sm" asp-controller="Admin" asp-action="ListRoles" title="Gérer les rôles"><i class="bi bi-gear"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

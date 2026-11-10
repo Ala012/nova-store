@@ -1,0 +1,21 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Une erreur est survenue";
+}
+
+<div class="container forbidden-page">
+    <div class="forbidden-card">
+        <span class="forbidden-code">500</span>
+        <span class="forbidden-icon"><i class="bi bi-exclamation-triangle"></i></span>
+        <h1>Oups, une <span class="grad-text">erreur</span> est survenue</h1>
+        <p>Quelque chose s'est mal passé de notre côté. Réessayez dans quelques instants.</p>
+        @if (Model.ShowRequestId)
+        {
+            <p class="error-request"><strong>Request ID:</strong> <code>@Model.RequestId</code></p>
+        }
+        <div class="forbidden-actions">
+            <a class="btn btn-gradient" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Retour à l'accueil</a>
+            <a class="btn btn-ghost" asp-controller="Product" asp-action="Index"><i class="bi bi-bag"></i> Boutique</a>
+        </div>
+    </div>
+</div>

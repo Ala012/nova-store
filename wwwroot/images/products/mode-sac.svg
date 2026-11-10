@@ -1,0 +1,25 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="leather" x1="112" y1="150" x2="292" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b97a4e"/><stop offset=".5" stop-color="#8a4f2a"/><stop offset="1" stop-color="#552a12"/>
+    </linearGradient>
+    <linearGradient id="flap" x1="120" y1="160" x2="280" y2="240" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d29a6b"/><stop offset="1" stop-color="#9a5a30"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="190" y1="220" x2="212" y2="248" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe6a3"/><stop offset="1" stop-color="#c08a2e"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="348" rx="98" ry="14" fill="#241a55" opacity=".14"/>
+  <path d="M152 168v-22c0-30 22-52 48-52s48 22 48 52v22" stroke="#6b3418" stroke-width="13" stroke-linecap="round"/>
+  <path d="M158 166v-20c0-24 18-42 42-42s42 18 42 42v20" stroke="#c98d5f" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+  <path d="M112 200c0-18 14-32 32-32h112c18 0 32 14 32 32v120c0 18-14 32-32 32H144c-18 0-32-14-32-32V200z" fill="url(#leather)"/>
+  <path d="M112 200c0-18 14-32 32-32h112c18 0 32 14 32 32v44H112v-44z" fill="url(#flap)"/>
+  <path d="M112 236h176" stroke="#5c2c13" stroke-width="3" opacity=".6"/>
+  <rect x="186" y="218" width="28" height="34" rx="7" fill="url(#gold)"/>
+  <rect x="195" y="228" width="10" height="12" rx="3" fill="#6b3418"/>
+  <path d="M130 300h140" stroke="#5c2c13" stroke-width="2" opacity=".4"/>
+  <path d="M126 206c6-10 16-16 28-18" stroke="#fff" stroke-opacity=".25" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="288" cy="270" r="18" fill="#6b3418" opacity=".35"/>
+  <circle cx="288" cy="270" r="8" fill="#c98d5f"/>
+</svg>

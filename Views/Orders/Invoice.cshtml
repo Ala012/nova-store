@@ -1,0 +1,111 @@
+@model Order
+@{
+    Layout = null;
+    var itemsTotal = Model.Items.Sum(i => i.LineTotal);
+    var shipping = Model.TotalAmount - itemsTotal;
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facture #@Model.Id.ToString("D5") · NOVA</title>
+    <style>
+        :root { --ink:#17151f; --muted:#6c6880; --line:#e7e4f0; --brand:#6d5efc; --soft:#f6f4ff; }
+        * { box-sizing:border-box; }
+        body { margin:0; padding:40px; font-family:"Segoe UI",Arial,sans-serif; color:var(--ink); background:#f3f2fa; }
+        .sheet { max-width:860px; margin:0 auto; background:#fff; border-radius:20px; padding:48px; box-shadow:0 20px 60px rgba(40,30,100,.12); }
+        .top { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; }
+        .brand { display:flex; align-items:center; gap:12px; font-size:26px; font-weight:800; letter-spacing:.5px; }
+        .mark { width:44px; height:44px; border-radius:14px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,#6d5efc,#b45cff); }
+        .brand small { display:block; font-size:11px; font-weight:500; color:var(--muted); letter-spacing:2px; }
+        .invoice-title { text-align:right; }
+        .invoice-title h1 { margin:0; font-size:30px; letter-spacing:-.5px; }
+        .invoice-title p { margin:6px 0 0; color:var(--muted); font-size:13px; }
+        .badge { display:inline-block; margin-top:10px; padding:6px 12px; border-radius:99px; background:var(--soft); color:var(--brand); font-size:12px; font-weight:700; }
+        .grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:36px; }
+        .box { background:#faf9ff; border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+        .box h3 { margin:0 0 10px; font-size:11px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); }
+        .box p { margin:3px 0; font-size:14px; line-height:1.5; }
+        table { width:100%; border-collapse:collapse; margin-top:32px; }
+        th { text-align:left; font-size:11px; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); padding:10px 12px; border-bottom:1px solid var(--line); }
+        td { padding:14px 12px; border-bottom:1px solid var(--line); font-size:14px; }
+        th:last-child, td:last-child { text-align:right; }
+        .totals { margin-top:22px; margin-left:auto; width:320px; }
+        .totals div { display:flex; justify-content:space-between; padding:7px 0; font-size:14px; }
+        .totals .grand { margin-top:8px; padding-top:14px; border-top:2px solid var(--ink); font-size:20px; font-weight:800; }
+        .grand span:last-child { color:var(--brand); }
+        .footer { margin-top:44px; padding-top:20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; gap:20px; color:var(--muted); font-size:12px; }
+        .print-btn { position:fixed; right:24px; bottom:24px; border:0; border-radius:14px; padding:14px 22px; background:linear-gradient(135deg,#6d5efc,#b45cff); color:#fff; font-weight:700; cursor:pointer; box-shadow:0 12px 30px rgba(109,94,252,.4); }
+        @@media print {
+            body { background:#fff; padding:0; }
+            .sheet { box-shadow:none; border-radius:0; padding:24px; max-width:none; }
+            .print-btn { display:none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sheet">
+        <div class="top">
+            <div class="brand">
+                <span class="mark">N</span>
+                <div>NOVA.<small>STORE · TUNISIE</small></div>
+            </div>
+            <div class="invoice-title">
+                <h1>Facture</h1>
+                <p>N° NOVA-@Model.Id.ToString("D5")<br />@Model.OrderDate.ToString("dd/MM/yyyy")</p>
+                <span class="badge">@Model.Status</span>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="box">
+                <h3>Facturé à</h3>
+                <p><strong>@Model.CustomerName</strong></p>
+                <p>@Model.Email</p>
+                <p>@Model.Phone</p>
+            </div>
+            <div class="box">
+                <h3>Livraison</h3>
+                <p>@Model.Address</p>
+                <p>Mode de paiement : @Model.PaymentMethod</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>P.U.</th>
+                    <th>Qté</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@Money.Format(item.Price)</td>
+                        <td>@item.Quantity</td>
+                        <td>@Money.Format(item.LineTotal)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="totals">
+            <div><span>Sous-total</span><span>@Money.Format(itemsTotal)</span></div>
+            <div><span>Livraison</span><span>@(shipping <= 0 ? "Offerte" : Money.Format(shipping))</span></div>
+            <div class="grand"><span>Total TTC</span><span>@Money.Format(Model.TotalAmount)</span></div>
+        </div>
+
+        <div class="footer">
+            <span>NOVA Store — 12 rue du Lac, Les Berges du Lac, Tunis<br />hello@nova.tn · +216 70 000 000</span>
+            <span>Merci pour votre confiance.<br />TVA incluse · Document généré électroniquement.</span>
+        </div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">🖨 Imprimer / PDF</button>
+</body>
+</html>

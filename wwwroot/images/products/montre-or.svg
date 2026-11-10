@@ -1,0 +1,33 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="leather" x1="168" y1="40" x2="232" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6b3b1e"/><stop offset="1" stop-color="#3a1e0f"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="124" y1="112" x2="276" y2="284" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe6a3"/><stop offset=".35" stop-color="#e8b354"/><stop offset=".72" stop-color="#b47b1e"/><stop offset="1" stop-color="#f4d489"/>
+    </linearGradient>
+    <radialGradient id="dial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(186 178) scale(94)">
+      <stop stop-color="#fffdf4"/><stop offset="1" stop-color="#efe2c0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="200" cy="350" rx="74" ry="13" fill="#241a55" opacity=".14"/>
+  <path d="M166 58h68v56h-68z" fill="url(#leather)"/>
+  <path d="M166 286h68v56h-68z" fill="url(#leather)"/>
+  <g stroke="#98603a" stroke-width="2" opacity=".5"><path d="M172 72h56M172 86h56M172 100h56M172 300h56M172 314h56M172 328h56"/></g>
+  <circle cx="200" cy="200" r="86" fill="url(#gold)"/>
+  <circle cx="200" cy="200" r="72" fill="url(#dial)"/>
+  <circle cx="200" cy="200" r="72" stroke="#c79a45" stroke-width="1.5"/>
+  <g stroke="#8a6a2a" stroke-width="2.4" stroke-linecap="round">
+    <path d="M200 138v10M200 252v10M138 200h10M252 200h10"/>
+    <path d="M156 156l7 7M237 237l7 7M244 156l-7 7M163 237l-7 7" opacity=".55"/>
+  </g>
+  <g stroke="#3a2a10" stroke-linecap="round">
+    <path d="M200 200v-42" stroke-width="4"/>
+    <path d="M200 200l30 18" stroke-width="3"/>
+    <path d="M200 200l-16 26" stroke="#8a6a2a" stroke-width="1.6"/>
+  </g>
+  <circle cx="200" cy="200" r="5" fill="#c79a45"/>
+  <text x="200" y="168" text-anchor="middle" fill="#6b5218" font-family="Georgia, serif" font-size="9" letter-spacing="2">NOVA</text>
+  <rect x="278" y="188" width="16" height="26" rx="8" fill="url(#gold)"/>
+  <path d="M140 136c12-12 30-20 48-22" stroke="#fff" stroke-opacity=".55" stroke-width="6" stroke-linecap="round"/>
+</svg>

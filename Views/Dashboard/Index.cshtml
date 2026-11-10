@@ -1,0 +1,250 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Tableau de bord";
+    var maxSales = Math.Max(1m, Model.SalesLast7Days.Max(s => s.Amount));
+    var statusColors = new Dictionary<string, string>
+    {
+        [OrderStatuses.Pending] = "#f59e0b",
+        [OrderStatuses.Confirmed] = "#6d5efc",
+        [OrderStatuses.Shipped] = "#3b82f6",
+        [OrderStatuses.Delivered] = "#10b981",
+        [OrderStatuses.Cancelled] = "#ff5c7a"
+    };
+    var statusTotal = Math.Max(1, Model.StatusCounts.Values.Sum());
+    var segments = new List<string>();
+    var cursor = 0d;
+    foreach (var status in OrderStatuses.All)
+    {
+        if (!Model.StatusCounts.TryGetValue(status, out var count) || count == 0) { continue; }
+        var pct = count * 100d / statusTotal;
+        segments.Add($"{statusColors[status]} {cursor.ToString("0.##", CultureInfo.InvariantCulture)}% {(cursor + pct).ToString("0.##", CultureInfo.InvariantCulture)}%");
+        cursor += pct;
+    }
+    var donut = segments.Any() ? string.Join(", ", segments) : "var(--bg-soft) 0% 100%";
+}
+
+<div class="container admin-page dashboard-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Home" asp-action="Index">Accueil</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Dashboard</span>
+            </nav>
+            <h1>Bonjour, <span class="grad-text">@(User.Identity?.Name?.Split('@')[0] ?? "Admin")</span> 👋</h1>
+            <p>Voici l'état de votre boutique aujourd'hui, @DateTime.Now.ToString("dddd dd MMMM yyyy").</p>
+        </div>
+        <div class="admin-header-actions">
+            <a class="btn btn-ghost" asp-controller="Orders" asp-action="Manage"><i class="bi bi-box-seam"></i> Commandes</a>
+            <a class="btn btn-gradient" asp-controller="Product" asp-action="Create"><i class="bi bi-plus-lg"></i> Nouveau produit</a>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card reveal" style="--accent:#6d5efc">
+            <div class="kpi-top">
+                <span class="kpi-icon"><i class="bi bi-wallet2"></i></span>
+                <span class="kpi-trend up"><i class="bi bi-arrow-up-right"></i> CA</span>
+            </div>
+            <strong>@Money.FormatShort(Model.TotalRevenue)</strong>
+            <span class="kpi-label">Chiffre d'affaires réalisé</span>
+            <div class="kpi-spark"><span style="width:78%"></span></div>
+        </div>
+        <div class="kpi-card reveal" style="--accent:#3b82f6">
+            <div class="kpi-top">
+                <span class="kpi-icon"><i class="bi bi-receipt"></i></span>
+                <span class="kpi-trend"><i class="bi bi-clock-history"></i> total</span>
+            </div>
+            <strong>@Model.OrdersCount</strong>
+            <span class="kpi-label">Commandes enregistrées</span>
+            <div class="kpi-spark"><span style="width:62%"></span></div>
+        </div>
+        <div class="kpi-card reveal" style="--accent:#10b981">
+            <div class="kpi-top">
+                <span class="kpi-icon"><i class="bi bi-people"></i></span>
+                <span class="kpi-trend up"><i class="bi bi-arrow-up-right"></i> clients</span>
+            </div>
+            <strong>@Model.CustomersCount</strong>
+            <span class="kpi-label">Clients uniques</span>
+            <div class="kpi-spark"><span style="width:54%"></span></div>
+        </div>
+        <div class="kpi-card reveal" style="--accent:#ec4899">
+            <div class="kpi-top">
+                <span class="kpi-icon"><i class="bi bi-bag"></i></span>
+                <span class="kpi-trend"><i class="bi bi-box"></i> catalogue</span>
+            </div>
+            <strong>@Model.ProductsCount</strong>
+            <span class="kpi-label">Produits en ligne</span>
+            <div class="kpi-spark"><span style="width:88%"></span></div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="panel chart-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow"><span class="eyebrow-dot"></span> Performance</span>
+                    <h4>Ventes des 7 derniers jours</h4>
+                    <p>Chiffre d'affaires des commandes confirmées et livrées.</p>
+                </div>
+                <span class="chart-total">@Money.FormatShort(Model.SalesLast7Days.Sum(s => s.Amount))</span>
+            </div>
+
+            <div class="bar-chart">
+                @foreach (var point in Model.SalesLast7Days)
+                {
+                    var height = point.Amount <= 0 ? 4 : Math.Max(8, (double)(point.Amount / maxSales) * 100);
+                    <div class="bar-col">
+                        <span class="bar-value">@(point.Amount > 0 ? Money.FormatShort(point.Amount) : "—")</span>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="height:@height.ToString("0.#", CultureInfo.InvariantCulture)%" title="@point.Label : @Money.Format(point.Amount) · @point.Orders commande(s)"></div>
+                        </div>
+                        <span class="bar-label">@point.Label</span>
+                    </div>
+                }
+            </div>
+
+            <div class="chart-legend">
+                <span><i class="bi bi-circle-fill" style="color:#6d5efc"></i> Chiffre d'affaires</span>
+                <span class="chart-note"><i class="bi bi-info-circle"></i> Les commandes annulées et en attente sont exclues.</span>
+            </div>
+        </div>
+
+        <div class="panel status-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow"><span class="eyebrow-dot"></span> Répartition</span>
+                    <h4>Statuts des commandes</h4>
+                    <p>Vue d'ensemble de votre flux.</p>
+                </div>
+            </div>
+            <div class="donut-wrap">
+                <div class="donut" style="background:conic-gradient(@donut)">
+                    <div class="donut-hole">
+                        <strong>@Model.OrdersCount</strong>
+                        <small>commandes</small>
+                    </div>
+                </div>
+                <div class="donut-legend">
+                    @foreach (var status in OrderStatuses.All)
+                    {
+                        var count = Model.StatusCounts.TryGetValue(status, out var c) ? c : 0;
+                        <div>
+                            <span class="legend-dot" style="background:@statusColors[status]"></span>
+                            <span>@status</span>
+                            <strong>@count</strong>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="status-foot">
+                <a class="link-arrow" asp-controller="Orders" asp-action="Manage">Gérer les commandes <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid dashboard-grid-wide">
+        <div class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h4>Dernières commandes</h4>
+                    <p>Les 7 commandes les plus récentes.</p>
+                </div>
+                <a class="link-arrow" asp-controller="Orders" asp-action="Manage">Tout voir <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="table-responsive">
+                <table class="table nova-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Commande</th>
+                            <th>Client</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.RecentOrders)
+                        {
+                            <tr>
+                                <td><a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id"><strong>#@order.Id.ToString("D5")</strong></a></td>
+                                <td>
+                                    <div class="customer-cell">
+                                        <span class="review-avatar" style="--i:#6d5efc">@DisplayText.Initials(order.CustomerName)</span>
+                                        <div><strong>@order.CustomerName</strong><small>@order.Items.Sum(i => i.Quantity) article(s)</small></div>
+                                    </div>
+                                </td>
+                                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                                <td><strong>@Money.Format(order.TotalAmount)</strong></td>
+                                <td><span class="status-badge @OrderStatuses.CssClass(order.Status)">@order.Status</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-side">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div><h4>Top ventes</h4><p>Meilleures ventes cumulées.</p></div>
+                </div>
+                <div class="top-products">
+                    @if (Model.TopProducts.Any())
+                    {
+                        var rank = 0;
+                        @foreach (var top in Model.TopProducts)
+                        {
+                            rank++;
+                            <a class="top-product" asp-controller="Product" asp-action="Details" asp-route-id="@top.Product.ProductId">
+                                <span class="top-rank">@rank</span>
+                                <img src="@Url.Content("~/images/" + top.Product.Image)" alt="@top.Product.Name" />
+                                <div><strong>@top.Product.Name</strong><small>@top.Sold vendu(s)</small></div>
+                                <span class="top-price">@Money.FormatShort(top.Product.Price)</span>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Aucune vente enregistrée pour le moment.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading">
+                    <div><h4>Stock faible</h4><p>À réapprovisionner rapidement.</p></div>
+                    <span class="count-pill count-danger">@Model.LowStockCount</span>
+                </div>
+                <div class="low-stock-list">
+                    @if (Model.LowStock.Any())
+                    {
+                        @foreach (var product in Model.LowStock)
+                        {
+                            <a class="low-stock-item" asp-controller="Product" asp-action="Edit" asp-route-id="@product.ProductId">
+                                <img src="@Url.Content("~/images/" + product.Image)" alt="@product.Name" />
+                                <div><strong>@product.Name</strong><small>@product.Category?.CategoryName</small></div>
+                                <span class="stock-pill @(product.QteStock == 0 ? "stock-out" : "stock-low")">@product.QteStock</span>
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Tous les stocks sont au vert.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="panel quick-actions">
+                <h5 class="panel-title"><i class="bi bi-lightning-charge"></i> Actions rapides</h5>
+                <a asp-controller="Product" asp-action="Create"><i class="bi bi-plus-circle"></i> Ajouter un produit</a>
+                <a asp-controller="Category" asp-action="Create"><i class="bi bi-tag"></i> Créer une catégorie</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Admin" asp-action="ListRoles"><i class="bi bi-shield-lock"></i> Gérer les rôles</a>
+                    <a asp-controller="Admin" asp-action="Users"><i class="bi bi-people"></i> Voir les utilisateurs</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

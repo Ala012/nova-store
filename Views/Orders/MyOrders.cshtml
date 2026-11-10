@@ -1,0 +1,83 @@
+@model IList<Order>
+@{
+    ViewData["Title"] = "Mes commandes";
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line">
+            <a asp-controller="Home" asp-action="Index">Accueil</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Mes commandes</span>
+        </nav>
+        <div class="page-hero-row">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Historique</span>
+                <h1>Mes <span class="grad-text">commandes</span></h1>
+                <p>Suivez vos achats, téléchargez vos factures et recommandez en un clic.</p>
+            </div>
+            <div class="page-hero-art" aria-hidden="true"><i class="bi bi-box-seam"></i></div>
+        </div>
+    </div>
+</section>
+
+<div class="container section">
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state empty-state-lg">
+            <span class="empty-icon"><i class="bi bi-receipt"></i></span>
+            <h3>Aucune commande pour le moment</h3>
+            <p>Votre première commande vous attend dans la boutique.</p>
+            <a class="btn btn-gradient btn-lg" asp-controller="Product" asp-action="Index">Commencer mes achats</a>
+        </div>
+    }
+    else
+    {
+        <div class="orders-list">
+            @foreach (var order in Model)
+            {
+                <article class="order-card reveal">
+                    <div class="order-card-head">
+                        <div class="order-id">
+                            <span class="order-icon"><i class="bi bi-bag-check"></i></span>
+                            <div>
+                                <strong>Commande #@order.Id.ToString("D5")</strong>
+                                <small>@order.OrderDate.ToString("dd MMMM yyyy à HH:mm")</small>
+                            </div>
+                        </div>
+                        <span class="status-badge @OrderStatuses.CssClass(order.Status)">@order.Status</span>
+                    </div>
+
+                    <div class="order-card-body">
+                        <div class="order-thumbs">
+                            @foreach (var item in order.Items.Take(3))
+                            {
+                                <img src="@Url.Content("~/images/" + (item.Image ?? "products/default.svg"))" alt="@item.ProductName" title="@item.ProductName" />
+                            }
+                            @if (order.Items.Count > 3)
+                            {
+                                <span class="order-thumb-more">+@(order.Items.Count - 3)</span>
+                            }
+                        </div>
+                        <div class="order-summary-line">
+                            <span>@order.Items.Sum(i => i.Quantity) article(s)</span>
+                            <strong>@Money.Format(order.TotalAmount)</strong>
+                        </div>
+                    </div>
+
+                    <div class="order-card-foot">
+                        <span class="order-payment"><i class="bi bi-credit-card"></i> @order.PaymentMethod</span>
+                        <div class="order-actions">
+                            <a class="btn btn-ghost btn-sm" asp-controller="Orders" asp-action="Invoice" asp-route-id="@order.Id">
+                                <i class="bi bi-file-earmark-text"></i> Facture
+                            </a>
+                            <a class="btn btn-gradient btn-sm" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id">
+                                Voir le détail <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</div>

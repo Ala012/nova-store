@@ -1,0 +1,125 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Mon profil";
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line">
+            <a asp-controller="Home" asp-action="Index">Accueil</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Mon profil</span>
+        </nav>
+        <div class="page-hero-row">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Espace membre</span>
+                <h1>Mon <span class="grad-text">profil</span></h1>
+                <p>Gérez vos informations et la sécurité de votre compte.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container profile-layout">
+    <aside class="profile-card">
+        <div class="profile-avatar">@DisplayText.Initials(Model.UserName)</div>
+        <h3>@Model.UserName.Split('@')[0]</h3>
+        <span class="role-badge">@Model.RoleLabel</span>
+        <p class="profile-email"><i class="bi bi-envelope"></i> @Model.Email</p>
+        <p class="profile-since"><i class="bi bi-calendar3"></i> Membre depuis @Model.MemberSince.ToString("MMMM yyyy")</p>
+
+        <div class="profile-stats">
+            <a asp-controller="Orders" asp-action="MyOrders">
+                <strong>@Model.OrdersCount</strong>
+                <span>Commandes</span>
+            </a>
+            <a asp-controller="Wishlist" asp-action="Index">
+                <strong>@Model.WishlistCount</strong>
+                <span>Favoris</span>
+            </a>
+        </div>
+
+        <div class="profile-links">
+            <a asp-controller="Orders" asp-action="MyOrders"><i class="bi bi-receipt"></i> Mes commandes <i class="bi bi-chevron-right"></i></a>
+            <a asp-controller="Wishlist" asp-action="Index"><i class="bi bi-heart"></i> Mes favoris <i class="bi bi-chevron-right"></i></a>
+            <a asp-controller="Panier" asp-action="Index"><i class="bi bi-bag"></i> Mon panier <i class="bi bi-chevron-right"></i></a>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <a asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2"></i> Dashboard <i class="bi bi-chevron-right"></i></a>
+            }
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit"><i class="bi bi-box-arrow-right"></i> Se déconnecter <i class="bi bi-chevron-right"></i></button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="profile-main">
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge"><i class="bi bi-person"></i></span>
+                <div>
+                    <h4>Informations personnelles</h4>
+                    <p>Certaines informations sont liées à votre compte sécurisé.</p>
+                </div>
+            </div>
+            <div class="info-grid">
+                <div><span>Nom d'utilisateur</span><strong>@Model.UserName</strong></div>
+                <div><span>Adresse e-mail</span><strong>@Model.Email</strong></div>
+                <div><span>Rôle</span><strong>@Model.RoleLabel</strong></div>
+                <div><span>Membre depuis</span><strong>@Model.MemberSince.ToString("dd/MM/yyyy")</strong></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge"><i class="bi bi-shield-lock"></i></span>
+                <div>
+                    <h4>Changer de mot de passe</h4>
+                    <p>Utilisez un mot de passe unique et difficile à deviner.</p>
+                </div>
+            </div>
+
+            <form asp-controller="Account" asp-action="ChangePassword" method="post" class="password-form">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="ChangePassword.CurrentPassword" class="form-label"></label>
+                    <div class="input-icon">
+                        <i class="bi bi-lock"></i>
+                        <input asp-for="ChangePassword.CurrentPassword" class="form-control" data-password-input />
+                        <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="ChangePassword.CurrentPassword" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="ChangePassword.NewPassword" class="form-label"></label>
+                        <div class="input-icon">
+                            <i class="bi bi-key"></i>
+                            <input asp-for="ChangePassword.NewPassword" class="form-control" data-password-input />
+                            <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher"><i class="bi bi-eye"></i></button>
+                        </div>
+                        <span asp-validation-for="ChangePassword.NewPassword" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ChangePassword.ConfirmPassword" class="form-label"></label>
+                        <div class="input-icon">
+                            <i class="bi bi-key"></i>
+                            <input asp-for="ChangePassword.ConfirmPassword" class="form-control" data-password-input />
+                            <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher"><i class="bi bi-eye"></i></button>
+                        </div>
+                        <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-gradient mt-4"><i class="bi bi-shield-check"></i> Mettre à jour le mot de passe</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,97 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Connexion";
+    var returnUrl = ViewBag.ReturnUrl as string;
+}
+
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-shell">
+            <aside class="auth-visual">
+                <a class="nova-brand auth-brand" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">N</span>
+                    <span class="brand-word">NOVA<span class="brand-dot">.</span></span>
+                </a>
+                <div class="auth-visual-copy">
+                    <span class="eyebrow light"><span class="eyebrow-dot"></span> Espace membre</span>
+                    <h2>Ravi de vous <span>revoir</span>.</h2>
+                    <p>Retrouvez vos favoris, suivez vos commandes et profitez d'offres réservées aux membres.</p>
+                    <ul class="auth-benefits">
+                        <li><i class="bi bi-check2"></i> Suivi de commandes en temps réel</li>
+                        <li><i class="bi bi-check2"></i> -10% sur votre première commande</li>
+                        <li><i class="bi bi-check2"></i> Retours gratuits sous 30 jours</li>
+                    </ul>
+                </div>
+                <div class="auth-visual-card">
+                    <span class="stars">★★★★★</span>
+                    <p>« Une expérience d'achat impeccable, du choix à la livraison. »</p>
+                    <div class="auth-person">
+                        <span class="mini-avatar" style="--i:#ec4899">IT</span>
+                        <div><strong>Ines T.</strong><small>Cliente vérifiée</small></div>
+                    </div>
+                </div>
+                <div class="auth-glow" aria-hidden="true"></div>
+            </aside>
+
+            <section class="auth-card">
+                <div class="auth-card-head">
+                    <span class="eyebrow"><span class="eyebrow-dot"></span> Connexion</span>
+                    <h1>Bon retour parmi <span class="grad-text">nous</span></h1>
+                    <p>Pas encore de compte ? <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@returnUrl">Créer un compte</a></p>
+                </div>
+
+                <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl" method="post" class="auth-form">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <label asp-for="Email" class="form-label"></label>
+                    <div class="input-icon">
+                        <i class="bi bi-envelope"></i>
+                        <input asp-for="Email" class="form-control" placeholder="vous@exemple.com" autocomplete="email" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+
+                    <div class="auth-row">
+                        <label asp-for="Password" class="form-label"></label>
+                        <a href="mailto:support@nova.tn" class="auth-forgot">Mot de passe oublié ?</a>
+                    </div>
+                    <div class="input-icon">
+                        <i class="bi bi-lock"></i>
+                        <input asp-for="Password" class="form-control" placeholder="Votre mot de passe" autocomplete="current-password" data-password-input />
+                        <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher le mot de passe"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+
+                    <label class="form-check nova-check mt-3">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <span class="form-check-label">Se souvenir de moi</span>
+                    </label>
+
+                    <button type="submit" class="btn btn-gradient btn-lg w-100 mt-3">
+                        Se connecter <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                    <div class="auth-divider"><span>ou tester un compte démo</span></div>
+                    <div class="demo-accounts">
+                        <button type="button" class="demo-account" data-demo-email="client@nova.tn" data-demo-password="Client@123">
+                            <span class="mini-avatar" style="--i:#10b981">CL</span>
+                            <div><strong>Client</strong><small>client@nova.tn</small></div>
+                        </button>
+                        <button type="button" class="demo-account" data-demo-email="manager@nova.tn" data-demo-password="Manager@123">
+                            <span class="mini-avatar" style="--i:#3b82f6">MG</span>
+                            <div><strong>Manager</strong><small>manager@nova.tn</small></div>
+                        </button>
+                        <button type="button" class="demo-account" data-demo-email="admin@nova.tn" data-demo-password="Admin@123">
+                            <span class="mini-avatar" style="--i:#6d5efc">AD</span>
+                            <div><strong>Admin</strong><small>admin@nova.tn</small></div>
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

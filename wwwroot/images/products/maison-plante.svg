@@ -1,0 +1,27 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="pot" x1="140" y1="260" x2="260" y2="350" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f1ede4"/><stop offset="1" stop-color="#c9bfae"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="120" y1="100" x2="280" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34d399"/><stop offset=".55" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="leaf2" x1="150" y1="130" x2="250" y2="250" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6ee7b7"/><stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="348" rx="76" ry="12" fill="#241a55" opacity=".13"/>
+  <path d="M154 268h92l-10 66c-1 8-8 14-16 14h-40c-8 0-15-6-16-14l-10-66z" fill="url(#pot)"/>
+  <path d="M150 256h100v20H150z" fill="#e4ddd0"/>
+  <path d="M200 268c-4-52 20-96 62-120-2 48-22 92-62 120z" fill="url(#leaf)"/>
+  <path d="M200 268c-30-22-56-24-84-8 20 32 50 42 84 8z" fill="url(#leaf2)"/>
+  <path d="M200 268c-8-46 8-80 40-104 6 42-8 80-40 104z" fill="url(#leaf2)"/>
+  <path d="M200 268c34-10 62-4 84 20-30 20-62 16-84-20z" fill="url(#leaf)"/>
+  <path d="M200 268c-22-42-14-78 12-108 14 40 8 78-12 108z" fill="#059669"/>
+  <g stroke="#065f46" stroke-width="2.5" stroke-linecap="round" opacity=".45">
+    <path d="M206 254l44-90M188 252l-56-12M206 254l40-58M212 252l60 14M204 252l14-74"/>
+  </g>
+  <g fill="#065f46" opacity=".3">
+    <circle cx="238" cy="190" r="3"/><circle cx="166" cy="228" r="3"/><circle cx="240" cy="218" r="3"/><circle cx="264" cy="270" r="3"/>
+  </g>
+</svg>

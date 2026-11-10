@@ -1,0 +1,146 @@
+@model OrderViewModel
+@{
+    ViewData["Title"] = "Passer la commande";
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line">
+            <a asp-controller="Panier" asp-action="Index">Panier</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Commande</span>
+        </nav>
+        <div class="page-hero-row">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Dernière étape</span>
+                <h1>Passer la <span class="grad-text">commande</span></h1>
+                <p>Vos informations sont chiffrées et ne sont jamais partagées.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container checkout-layout">
+    <form asp-controller="Panier" asp-action="Checkout" method="post" class="checkout-form">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger validation-box"></div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge">1</span>
+                <div>
+                    <h4>Coordonnées</h4>
+                    <p>Nous vous contacterons pour confirmer la livraison.</p>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Nom complet</label>
+                    <input class="form-control" value="@Model.CustomerName" disabled />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">E-mail</label>
+                    <input class="form-control" value="@Model.Email" disabled />
+                </div>
+                <div class="col-12">
+                    <label asp-for="Address" class="form-label"></label>
+                    <textarea asp-for="Address" class="form-control" rows="3" placeholder="Rue, numéro, code postal, ville…"></textarea>
+                    <span asp-validation-for="Address" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" placeholder="+216 55 123 456" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge">2</span>
+                <div>
+                    <h4>Paiement</h4>
+                    <p>Choisissez la méthode qui vous convient.</p>
+                </div>
+            </div>
+
+            <div class="payment-grid">
+                <label class="payment-option">
+                    <input type="radio" asp-for="PaymentMethod" value="Carte bancaire" />
+                    <span class="payment-card">
+                        <i class="bi bi-credit-card-2-front"></i>
+                        <strong>Carte bancaire</strong>
+                        <small>Visa · Mastercard · 3D Secure</small>
+                    </span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" asp-for="PaymentMethod" value="PayPal" />
+                    <span class="payment-card">
+                        <i class="bi bi-paypal"></i>
+                        <strong>PayPal</strong>
+                        <small>Paiement en 4x sans frais</small>
+                    </span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" asp-for="PaymentMethod" value="Paiement à la livraison" />
+                    <span class="payment-card">
+                        <i class="bi bi-cash-coin"></i>
+                        <strong>À la livraison</strong>
+                        <small>Payez en espèces à réception</small>
+                    </span>
+                </label>
+            </div>
+            <span asp-validation-for="PaymentMethod" class="text-danger small"></span>
+        </div>
+
+        <div class="checkout-actions">
+            <a class="btn btn-ghost" asp-controller="Panier" asp-action="Index"><i class="bi bi-arrow-left"></i> Retour au panier</a>
+            <button type="submit" class="btn btn-gradient btn-lg">
+                <i class="bi bi-lock"></i> Confirmer et payer
+            </button>
+        </div>
+    </form>
+
+    <aside class="order-summary">
+        <h3>Votre commande</h3>
+        <div class="order-items">
+            @foreach (var item in Model.CartItems)
+            {
+                <div class="order-item">
+                    <div>
+                        <strong>@item.ProductName</strong>
+                        <small>@item.Quantity × @Money.Format(item.Price)</small>
+                    </div>
+                    <span>@Money.Format(item.Price * item.Quantity)</span>
+                </div>
+            }
+        </div>
+
+        <div class="summary-row">
+            <span>Sous-total</span>
+            <strong>@Money.Format(Model.Subtotal)</strong>
+        </div>
+        <div class="summary-row">
+            <span>Livraison</span>
+            <strong>@(Model.ShippingFee == 0 ? "Offerte" : Money.Format(Model.ShippingFee))</strong>
+        </div>
+        <div class="summary-total">
+            <span>Total à payer</span>
+            <strong>@Money.Format(Model.TotalAmount)</strong>
+        </div>
+
+        <div class="summary-secure">
+            <i class="bi bi-shield-lock"></i> Paiement chiffré et sécurisé
+        </div>
+        <div class="checkout-reassurance">
+            <div><i class="bi bi-truck"></i><span>Expédition sous 24h</span></div>
+            <div><i class="bi bi-arrow-repeat"></i><span>Retours gratuits 30 jours</span></div>
+            <div><i class="bi bi-headset"></i><span>Support 7j/7</span></div>
+        </div>
+    </aside>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

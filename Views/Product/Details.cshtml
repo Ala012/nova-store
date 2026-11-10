@@ -1,0 +1,229 @@
+@model ProductDetailsViewModel
+@{
+    var product = Model.Product;
+    var imagePath = Url.Content("~/images/" + product.Image);
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var isAuth = User.Identity?.IsAuthenticated == true;
+    var stockClass = product.QteStock == 0 ? "out" : product.QteStock <= 5 ? "low" : "ok";
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line" aria-label="Fil d'ariane">
+            <a asp-controller="Home" asp-action="Index">Accueil</a>
+            <i class="bi bi-chevron-right"></i>
+            <a asp-controller="Product" asp-action="Index">Boutique</a>
+            <i class="bi bi-chevron-right"></i>
+            <a asp-controller="Product" asp-action="Index" asp-route-categoryId="@product.CategoryId">@product.Category?.CategoryName</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>@product.Name</span>
+        </nav>
+    </div>
+</section>
+
+<div class="container product-detail-wrap">
+    <div class="product-detail-grid">
+        <div class="detail-gallery reveal">
+            <div class="detail-media" style="--accent:@(product.Category?.Accent ?? "#6d5efc")">
+                <img src="@imagePath" alt="@product.Name" />
+                <div class="detail-badges">
+                    @if (product.DiscountPercent > 0)
+                    {
+                        <span class="badge-pill badge-promo">-@product.DiscountPercent%</span>
+                    }
+                    @if (product.IsNew)
+                    {
+                        <span class="badge-pill badge-new">Nouveau</span>
+                    }
+                </div>
+            </div>
+            <div class="detail-assurance">
+                <div><i class="bi bi-truck"></i><span>Livraison 24-48h</span></div>
+                <div><i class="bi bi-arrow-repeat"></i><span>Retour 30 jours</span></div>
+                <div><i class="bi bi-shield-check"></i><span>Garantie 2 ans</span></div>
+            </div>
+        </div>
+
+        <div class="detail-info reveal">
+            <div class="detail-topline">
+                <a class="product-cat" asp-controller="Product" asp-action="Index" asp-route-categoryId="@product.CategoryId">
+                    @product.Category?.CategoryName
+                </a>
+                <span class="stock-pill stock-@stockClass">
+                    <span class="stock-dot"></span>
+                    @(product.QteStock == 0 ? "Épuisé" : product.QteStock <= 5 ? $"Plus que {product.QteStock} en stock" : "En stock")
+                </span>
+            </div>
+
+            <h1>@product.Name</h1>
+
+            <div class="detail-rating">
+                <span class="stars">@Money.Stars(product.RatingAverage)</span>
+                <strong>@product.RatingAverage.ToString("0.0")</strong>
+                <span>· @product.RatingCount avis vérifié@(product.RatingCount > 1 ? "s" : "")</span>
+                <a href="#reviews">Lire les avis</a>
+            </div>
+
+            <div class="detail-price">
+                <span class="price">@Money.Format(product.Price)</span>
+                @if (product.OldPrice.HasValue && product.OldPrice > product.Price)
+                {
+                    <span class="old-price">@Money.Format(product.OldPrice.Value)</span>
+                    <span class="save-pill">Économisez @Money.Format(product.OldPrice.Value - product.Price)</span>
+                }
+            </div>
+
+            <p class="detail-description">@product.Description</p>
+
+            <ul class="detail-features">
+                <li><i class="bi bi-check2"></i> Produit original, contrôlé par nos experts</li>
+                <li><i class="bi bi-check2"></i> Emballage soigné et expédition sous 24h</li>
+                <li><i class="bi bi-check2"></i> Paiement sécurisé ou à la livraison</li>
+            </ul>
+
+            <div class="detail-buy">
+                <form asp-controller="Panier" asp-action="AddProduct" method="post" class="detail-buy-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@product.ProductId" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <div class="qty-stepper" data-qty-stepper>
+                        <button type="button" data-qty-minus aria-label="Diminuer"><i class="bi bi-dash"></i></button>
+                        <input type="number" name="quantity" value="1" min="1" max="@Math.Max(product.QteStock, 1)" aria-label="Quantité" />
+                        <button type="button" data-qty-plus aria-label="Augmenter"><i class="bi bi-plus"></i></button>
+                    </div>
+                    <button type="submit" class="btn btn-gradient btn-lg flex-grow-1" @(product.InStock ? null : "disabled")>
+                        <i class="bi bi-bag-plus"></i> @(product.InStock ? "Ajouter au panier" : "Indisponible")
+                    </button>
+                </form>
+
+                @if (isAuth)
+                {
+                    <form asp-controller="Wishlist" asp-action="Toggle" method="post" class="detail-wish-form" data-wishlist-form>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@product.ProductId" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <button type="submit" class="wish-btn wish-btn-lg @(Model.IsInWishlist ? "is-active" : null)" title="Ajouter aux favoris">
+                            <i class="bi @(Model.IsInWishlist ? "bi-heart-fill" : "bi-heart")"></i>
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a class="wish-btn wish-btn-lg" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl" title="Se connecter pour ajouter aux favoris">
+                        <i class="bi bi-heart"></i>
+                    </a>
+                }
+            </div>
+
+            <div class="detail-meta">
+                <div><span>Référence</span><strong>NOVA-@product.ProductId.ToString("D4")</strong></div>
+                <div><span>Catégorie</span><strong>@product.Category?.CategoryName</strong></div>
+                <div><span>Disponibilité</span><strong>@product.QteStock unité@(product.QteStock > 1 ? "s" : "")</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <section class="reviews-section" id="reviews">
+        <div class="section-head section-head-sm">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Avis clients</span>
+                <h2>Ce qu'en pensent <span class="grad-text">nos clients</span></h2>
+                <p>@product.RatingCount avis vérifié@(product.RatingCount > 1 ? "s" : "") · note moyenne @product.RatingAverage.ToString("0.0")/5</p>
+            </div>
+        </div>
+
+        <div class="reviews-layout">
+            <div class="reviews-list">
+                @if (Model.Reviews.Any())
+                {
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <article class="review-card">
+                            <div class="review-head">
+                                <span class="review-avatar" style="--i:#6d5efc">@DisplayText.Initials(review.UserName)</span>
+                                <div>
+                                    <strong>@review.UserName</strong>
+                                    <small>@review.CreatedAt.ToString("dd/MM/yyyy") · Achat vérifié</small>
+                                </div>
+                                <span class="stars">@Money.Stars(review.Rating)</span>
+                            </div>
+                            <p>@review.Comment</p>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state empty-state-sm">
+                        <span class="empty-icon"><i class="bi bi-chat-square-heart"></i></span>
+                        <h3>Aucun avis pour le moment</h3>
+                        <p>Soyez le premier à partager votre expérience.</p>
+                    </div>
+                }
+            </div>
+
+            <aside class="review-form-card">
+                <h4>Laisser un avis</h4>
+                @if (!isAuth)
+                {
+                    <p class="text-muted">Connectez-vous pour partager votre avis sur ce produit.</p>
+                    <a class="btn btn-gradient w-100" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl">
+                        Se connecter
+                    </a>
+                }
+                else if (!Model.CanReview)
+                {
+                    <div class="review-done">
+                        <i class="bi bi-check2-circle"></i>
+                        <strong>Merci pour votre avis !</strong>
+                        <p>Vous avez déjà noté ce produit.</p>
+                    </div>
+                }
+                else
+                {
+                    <form asp-controller="Product" asp-action="AddReview" asp-route-id="@product.ProductId" method="post">
+                        @Html.AntiForgeryToken()
+                        <label class="form-label">Votre note</label>
+                        <div class="star-picker" data-star-picker>
+                            <input type="hidden" name="Rating" id="ratingValue" value="5" />
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                <button type="button" class="star-btn @(i <= 5 ? "is-active" : null)" data-star="@i" aria-label="@i étoiles">
+                                    <i class="bi bi-star-fill"></i>
+                                </button>
+                            }
+                        </div>
+                        <div class="mt-3">
+                            <label class="form-label" for="reviewComment">Votre avis</label>
+                            <textarea class="form-control" id="reviewComment" name="Comment" rows="4" maxlength="1000"
+                                      placeholder="Qualité, livraison, design… partagez votre expérience."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-gradient w-100 mt-3">
+                            <i class="bi bi-send"></i> Publier mon avis
+                        </button>
+                    </form>
+                }
+            </aside>
+        </div>
+    </section>
+
+    @if (Model.Related.Any())
+    {
+        <section class="section section-related">
+            <div class="section-head">
+                <div>
+                    <span class="eyebrow"><span class="eyebrow-dot"></span> Vous aimerez aussi</span>
+                    <h2>Dans la même <span class="grad-text">catégorie</span></h2>
+                </div>
+                <a class="link-arrow" asp-controller="Product" asp-action="Index" asp-route-categoryId="@product.CategoryId">
+                    Voir tout <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="product-grid product-grid-4">
+                @foreach (var related in Model.Related)
+                {
+                    <partial name="_ProductCard" model="related" />
+                }
+            </div>
+        </section>
+    }
+</div>

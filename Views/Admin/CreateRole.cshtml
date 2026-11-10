@@ -1,0 +1,38 @@
+@model CreateRoleViewModel
+@{
+    ViewData["Title"] = "Nouveau rôle";
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Admin" asp-action="ListRoles">Rôles</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Nouveau</span>
+            </nav>
+            <h1>Créer un <span class="grad-text">rôle</span></h1>
+            <p>Un rôle regroupe un ensemble de permissions attribuées aux utilisateurs.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Admin" asp-action="ListRoles"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <form asp-controller="Admin" asp-action="CreateRole" method="post" class="admin-form admin-form-narrow">
+        @Html.AntiForgeryToken()
+        <div class="panel">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <label asp-for="RoleName" class="form-label"></label>
+            <input asp-for="RoleName" class="form-control form-control-lg" placeholder="Ex : Manager" />
+            <span asp-validation-for="RoleName" class="text-danger small"></span>
+            <p class="field-hint">Choisissez un nom court et explicite. Exemples : Admin, Manager, User, Support.</p>
+        </div>
+        <div class="form-actions">
+            <a class="btn btn-ghost" asp-controller="Admin" asp-action="ListRoles">Annuler</a>
+            <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-check2"></i> Créer le rôle</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

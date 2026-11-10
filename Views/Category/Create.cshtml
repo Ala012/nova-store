@@ -1,0 +1,59 @@
+@model Category
+@{
+    ViewData["Title"] = "Nouvelle catégorie";
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Category" asp-action="Index">Catégories</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Nouvelle</span>
+            </nav>
+            <h1>Créer une <span class="grad-text">catégorie</span></h1>
+            <p>Organisez votre catalogue par univers pour guider vos clients.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Category" asp-action="Index"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <form asp-controller="Category" asp-action="Create" method="post" class="admin-form admin-form-narrow">
+        @Html.AntiForgeryToken()
+        <div class="panel">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryName" class="form-label"></label>
+                <input asp-for="CategoryName" class="form-control" placeholder="Ex : Audio" />
+                <span asp-validation-for="CategoryName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Une courte description de l'univers…"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Icon" class="form-label">Icône Bootstrap Icons</label>
+                    <input asp-for="Icon" class="form-control" placeholder="bi-headphones" />
+                    <p class="field-hint">Ex : bi-headphones, bi-laptop, bi-bag.</p>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Accent" class="form-label">Couleur d'accent</label>
+                    <input asp-for="Accent" type="color" class="form-control form-control-color w-100" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a class="btn btn-ghost" asp-controller="Category" asp-action="Index">Annuler</a>
+            <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-check2"></i> Créer la catégorie</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

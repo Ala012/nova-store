@@ -1,0 +1,27 @@
+@model IList<TP_Product.ViewModels.CategoryNavItem>
+@{
+    var activeId = ViewData["ActiveCategoryId"] as int?;
+}
+
+<div class="category-nav">
+    <a asp-controller="Product" asp-action="Index"
+       class="category-nav-link @(activeId == null ? "active" : null)">
+        <span class="category-nav-icon" style="--accent:#6d5efc">
+            <i class="bi bi-grid-3x3-gap-fill"></i>
+        </span>
+        <span class="category-nav-label">Tout le catalogue</span>
+        <span class="category-nav-count">@Model.Sum(c => c.ProductCount)</span>
+    </a>
+
+    @foreach (var category in Model)
+    {
+        <a asp-controller="Product" asp-action="Index" asp-route-categoryId="@category.Id"
+           class="category-nav-link @(activeId == category.Id ? "active" : null)">
+            <span class="category-nav-icon" style="--accent:@category.Accent">
+                <i class="bi @category.Icon"></i>
+            </span>
+            <span class="category-nav-label">@category.Name</span>
+            <span class="category-nav-count">@category.ProductCount</span>
+        </a>
+    }
+</div>

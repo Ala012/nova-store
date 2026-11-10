@@ -1,0 +1,120 @@
+@model Order
+@{
+    ViewData["Title"] = "Commande confirmée";
+}
+
+<section class="confirmation-hero">
+    <div class="container">
+        <div class="success-burst" aria-hidden="true">
+            <span></span><span></span><span></span>
+        </div>
+        <span class="success-icon"><i class="bi bi-check2"></i></span>
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Merci pour votre confiance</span>
+        <h1>Votre commande est <span class="grad-text">confirmée</span> !</h1>
+        <p>
+            Merci @Model.CustomerName.Split('@')[0] ! Votre commande <strong>#@Model.Id.ToString("D5")</strong>
+            a bien été enregistrée. Un e-mail de confirmation vous sera envoyé.
+        </p>
+        <div class="confirmation-actions">
+            <a class="btn btn-gradient btn-lg" asp-controller="Orders" asp-action="Invoice" asp-route-id="@Model.Id">
+                <i class="bi bi-receipt"></i> Télécharger la facture
+            </a>
+            <a class="btn btn-ghost btn-lg" asp-controller="Orders" asp-action="MyOrders">
+                <i class="bi bi-box-seam"></i> Mes commandes
+            </a>
+        </div>
+    </div>
+</section>
+
+<div class="container confirmation-layout">
+    <div class="panel">
+        <div class="panel-heading">
+            <span class="step-badge"><i class="bi bi-receipt"></i></span>
+            <div>
+                <h4>Récapitulatif de la commande</h4>
+                <p>Commande passée le @Model.OrderDate.ToString("dd/MM/yyyy à HH:mm")</p>
+            </div>
+            <span class="status-badge @OrderStatuses.CssClass(Model.Status)">@Model.Status</span>
+        </div>
+
+        <div class="order-info-grid">
+            <div>
+                <span>Numéro</span>
+                <strong>#@Model.Id.ToString("D5")</strong>
+            </div>
+            <div>
+                <span>Paiement</span>
+                <strong>@Model.PaymentMethod</strong>
+            </div>
+            <div>
+                <span>Livraison</span>
+                <strong>@Model.Address</strong>
+            </div>
+            <div>
+                <span>Téléphone</span>
+                <strong>@Model.Phone</strong>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table nova-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Prix unitaire</th>
+                        <th>Qté</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <div class="table-product">
+                                    <img src="@Url.Content("~/images/" + (item.Image ?? "products/default.svg"))" alt="@item.ProductName" />
+                                    <strong>@item.ProductName</strong>
+                                </div>
+                            </td>
+                            <td>@Money.Format(item.Price)</td>
+                            <td>@item.Quantity</td>
+                            <td class="text-end"><strong>@Money.Format(item.LineTotal)</strong></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end">Total payé</td>
+                        <td class="text-end"><strong class="price">@Money.Format(Model.TotalAmount)</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <aside class="confirmation-side">
+        <div class="panel">
+            <h5 class="panel-title"><i class="bi bi-truck"></i> Et maintenant ?</h5>
+            <div class="timeline-mini">
+                <div class="timeline-mini-item is-done">
+                    <span><i class="bi bi-check2"></i></span>
+                    <div><strong>Commande confirmée</strong><small>@Model.OrderDate.ToString("dd/MM · HH:mm")</small></div>
+                </div>
+                <div class="timeline-mini-item">
+                    <span><i class="bi bi-box-seam"></i></span>
+                    <div><strong>Préparation</strong><small>Sous 24h ouvrées</small></div>
+                </div>
+                <div class="timeline-mini-item">
+                    <span><i class="bi bi-truck"></i></span>
+                    <div><strong>Expédition</strong><small>Livraison 24-48h</small></div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-support">
+            <i class="bi bi-headset"></i>
+            <h5>Une question ?</h5>
+            <p>Notre équipe est disponible 7j/7 pour vous accompagner.</p>
+            <a href="mailto:hello@nova.tn" class="link-arrow">hello@nova.tn <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </aside>
+</div>

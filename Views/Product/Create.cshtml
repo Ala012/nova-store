@@ -1,0 +1,32 @@
+@model CreateViewModel
+@{
+    ViewData["Title"] = "Nouveau produit";
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Product" asp-action="Manage">Produits</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Nouveau</span>
+            </nav>
+            <h1>Ajouter un <span class="grad-text">produit</span></h1>
+            <p>Renseignez les informations et publiez votre produit en quelques secondes.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Product" asp-action="Manage"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <form asp-controller="Product" asp-action="Create" method="post" enctype="multipart/form-data" class="admin-form">
+        @Html.AntiForgeryToken()
+        <partial name="_ProductFormFields" model="Model" />
+        <div class="form-actions">
+            <a class="btn btn-ghost" asp-controller="Product" asp-action="Manage">Annuler</a>
+            <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-check2"></i> Publier le produit</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

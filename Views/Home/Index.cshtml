@@ -1,0 +1,236 @@
+﻿@model HomeViewModel
+@{
+    var spotlight = Model.Featured.FirstOrDefault() ?? Model.NewArrivals.FirstOrDefault() ?? Model.TopRated.FirstOrDefault();
+    var spotlightImage = spotlight is null ? null : Url.Content("~/images/" + spotlight.Image);
+}
+
+<section class="hero">
+    <div class="container hero-grid">
+        <div class="hero-copy">
+            <span class="eyebrow reveal"><span class="eyebrow-dot"></span> Nouvelle collection 2026</span>
+            <h1 class="reveal">Le futur de votre <span class="grad-text">quotidien</span> commence ici.</h1>
+            <p class="hero-lead reveal">
+                Tech, design et lifestyle : une sélection pointue de produits qui allient
+                performance, esthétique et prix juste. Bienvenue chez <strong>NOVA</strong>.
+            </p>
+            <div class="hero-actions reveal">
+                <a class="btn btn-gradient btn-lg" asp-controller="Product" asp-action="Index">
+                    Explorer la boutique <i class="bi bi-arrow-right"></i>
+                </a>
+                <a class="btn btn-ghost btn-lg" asp-controller="Product" asp-action="Index" asp-route-sort="new">
+                    <i class="bi bi-stars"></i> Voir les nouveautés
+                </a>
+            </div>
+            <div class="hero-proof reveal">
+                <div class="avatar-stack">
+                    <span class="mini-avatar" style="--i:#6d5efc">SB</span>
+                    <span class="mini-avatar" style="--i:#ec4899">IT</span>
+                    <span class="mini-avatar" style="--i:#0ea5e9">YK</span>
+                    <span class="mini-avatar" style="--i:#10b981">MG</span>
+                    <span class="mini-avatar more">+2k</span>
+                </div>
+                <div class="proof-text">
+                    <span class="stars">★★★★★</span>
+                    <small>4,9/5 — plus de 2 400 clients satisfaits</small>
+                </div>
+            </div>
+            <div class="hero-stats reveal">
+                <div><strong>@Model.TotalProducts<span>+</span></strong><small>produits sélectionnés</small></div>
+                <div><strong>@Model.TotalOrders<span>+</span></strong><small>commandes traitées</small></div>
+                <div><strong>24h</strong><small>expédition express</small></div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-orb" aria-hidden="true"></div>
+            <div class="hero-grid-pattern" aria-hidden="true"></div>
+
+            @if (spotlight is not null)
+            {
+                <div class="showcase-card reveal">
+                    <span class="showcase-tag"><i class="bi bi-fire"></i> Best-seller</span>
+                    <div class="showcase-img">
+                        <img src="@spotlightImage" alt="@spotlight.Name" />
+                    </div>
+                    <div class="showcase-info">
+                        <span>@spotlight.Category?.CategoryName</span>
+                        <strong>@spotlight.Name</strong>
+                        <div class="showcase-price">
+                            <b>@Money.Format(spotlight.Price)</b>
+                            @if (spotlight.OldPrice.HasValue)
+                            {
+                                <s>@Money.Format(spotlight.OldPrice.Value)</s>
+                            }
+                        </div>
+                    </div>
+                    <a class="showcase-link" asp-controller="Product" asp-action="Details" asp-route-id="@spotlight.ProductId">
+                        Découvrir <i class="bi bi-arrow-up-right"></i>
+                    </a>
+                </div>
+            }
+
+            <div class="float-chip chip-1">
+                <span class="chip-icon" style="--i:#6d5efc"><i class="bi bi-lightning-charge-fill"></i></span>
+                <div><strong>Livraison 24h</strong><small>Partout en Tunisie</small></div>
+            </div>
+            <div class="float-chip chip-2">
+                <span class="chip-icon" style="--i:#10b981"><i class="bi bi-shield-check"></i></span>
+                <div><strong>Paiement sécurisé</strong><small>3D Secure</small></div>
+            </div>
+            <div class="float-chip chip-3">
+                <span class="chip-rating">4.9</span>
+                <div><strong>Avis vérifiés</strong><small>2 400+ clients</small></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="brand-strip" aria-label="Nos engagements">
+    <div class="container brand-strip-inner">
+        <span><i class="bi bi-truck"></i> Livraison express</span>
+        <span><i class="bi bi-arrow-repeat"></i> Retours 30 jours</span>
+        <span><i class="bi bi-patch-check"></i> Produits authentiques</span>
+        <span><i class="bi bi-headset"></i> Support 7j/7</span>
+        <span><i class="bi bi-credit-card"></i> Paiement flexible</span>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Explorer</span>
+                <h2>Shop by <span class="grad-text">catégorie</span></h2>
+                <p>Trouvez exactement ce qu'il vous faut, en quelques clics.</p>
+            </div>
+            <a class="link-arrow" asp-controller="Category" asp-action="Index">
+                Toutes les catégories <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="category-grid">
+            @foreach (var category in Model.Categories)
+            {
+                <a class="cat-card reveal" asp-controller="Product" asp-action="Index" asp-route-categoryId="@category.Id"
+                   style="--accent:@category.Accent">
+                    <span class="cat-icon"><i class="bi @category.Icon"></i></span>
+                    <div class="cat-text">
+                        <h3>@category.Name</h3>
+                        <span>@category.ProductCount produit@(category.ProductCount > 1 ? "s" : "")</span>
+                    </div>
+                    <i class="bi bi-arrow-up-right cat-arrow"></i>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section-soft">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Sélection NOVA</span>
+                <h2>Les produits qui font <span class="grad-text">la différence</span></h2>
+                <p>Notre équipe a testé, comparé et validé. Vous n'avez plus qu'à choisir.</p>
+            </div>
+            <a class="link-arrow" asp-controller="Product" asp-action="Index">
+                Tout voir <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        @if (Model.Featured.Any())
+        {
+            <div class="product-grid">
+                @foreach (var product in Model.Featured)
+                {
+                    <partial name="_ProductCard" model="product" />
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <i class="bi bi-box-seam"></i>
+                <h3>La boutique se prépare…</h3>
+                <p>Revenez dans quelques instants pour découvrir nos produits.</p>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="container">
+    <div class="promo-band reveal">
+        <div class="promo-band-copy">
+            <span class="eyebrow light"><span class="eyebrow-dot"></span> Offre limitée</span>
+            <h2>Jusqu'à <span>-30%</span> sur la sélection Audio</h2>
+            <p>Casques, écouteurs et enceintes : le son n'a jamais été aussi beau.</p>
+            <a class="btn btn-light-pill" asp-controller="Product" asp-action="Index" asp-route-categoryId="@Model.Categories.FirstOrDefault(c => c.Name == "Audio")?.Id" asp-route-promo="true">
+                Profiter de l'offre <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="promo-band-art" aria-hidden="true">
+            <span class="promo-orb"></span>
+            <i class="bi bi-headphones"></i>
+            <span class="promo-tag">-30%</span>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Fraîchement arrivés</span>
+                <h2>Les nouveautés de <span class="grad-text">la semaine</span></h2>
+            </div>
+            <a class="link-arrow" asp-controller="Product" asp-action="Index" asp-route-sort="new">
+                Voir les nouveautés <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="product-grid product-grid-4">
+            @foreach (var product in Model.NewArrivals)
+            {
+                <partial name="_ProductCard" model="product" />
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section section-soft">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Les mieux notés</span>
+                <h2>Les coups de cœur <span class="grad-text">de la communauté</span></h2>
+            </div>
+            <a class="link-arrow" asp-controller="Product" asp-action="Index" asp-route-sort="rating">
+                Classement complet <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="product-grid product-grid-4">
+            @foreach (var product in Model.TopRated)
+            {
+                <partial name="_ProductCard" model="product" />
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="club-banner reveal">
+            <div class="club-icon"><i class="bi bi-gem"></i></div>
+            <div class="club-copy">
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Le club NOVA</span>
+                <h2>Des avantages réservés aux membres</h2>
+                <p>Créez votre compte gratuitement et profitez de -10% sur votre première commande.</p>
+            </div>
+            <div class="club-actions">
+                <a class="btn btn-gradient btn-lg" asp-controller="Account" asp-action="Register">Devenir membre</a>
+                <a class="btn btn-ghost btn-lg" asp-controller="Account" asp-action="Login">J'ai déjà un compte</a>
+            </div>
+        </div>
+    </div>
+</section>

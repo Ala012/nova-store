@@ -1,0 +1,87 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var userName = User.Identity?.Name ?? "Client";
+    <div class="dropdown user-dropdown">
+        <button class="user-chip" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="avatar">@DisplayText.Initials(userName)</span>
+            <span class="user-chip-text">
+                <small>Bonjour</small>
+                <strong>@userName.Split('@')[0]</strong>
+            </span>
+            <i class="bi bi-chevron-down"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end nova-dropdown">
+            <li class="dropdown-header">Mon espace</li>
+            <li>
+                <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
+                    <i class="bi bi-person-badge"></i> Mon profil
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-controller="Orders" asp-action="MyOrders">
+                    <i class="bi bi-receipt"></i> Mes commandes
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" asp-controller="Wishlist" asp-action="Index">
+                    <i class="bi bi-heart"></i> Mes favoris
+                </a>
+            </li>
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <li><hr class="dropdown-divider" /></li>
+                <li class="dropdown-header">Pilotage</li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                        <i class="bi bi-speedometer2"></i> Tableau de bord
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Orders" asp-action="Manage">
+                        <i class="bi bi-box-seam"></i> Gérer les commandes
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Product" asp-action="Manage">
+                        <i class="bi bi-bag"></i> Gérer les produits
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Category" asp-action="Index">
+                        <i class="bi bi-tags"></i> Catégories
+                    </a>
+                </li>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <li>
+                    <a class="dropdown-item" asp-controller="Admin" asp-action="ListRoles">
+                        <i class="bi bi-shield-lock"></i> Rôles &amp; accès
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Admin" asp-action="Users">
+                        <i class="bi bi-people"></i> Utilisateurs
+                    </a>
+                </li>
+            }
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="bi bi-box-arrow-right"></i> Déconnexion
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <a class="btn btn-ghost btn-sm nav-auth-link" asp-controller="Account" asp-action="Login">Connexion</a>
+    <a class="btn btn-gradient btn-sm nav-auth-link" asp-controller="Account" asp-action="Register">S'inscrire</a>
+}

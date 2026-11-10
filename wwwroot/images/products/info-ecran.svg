@@ -1,0 +1,23 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="frame" x1="46" y1="92" x2="354" y2="268" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3a3560"/><stop offset="1" stop-color="#17132b"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="70" y1="108" x2="330" y2="252" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f1b46"/><stop offset=".5" stop-color="#3b2478"/><stop offset="1" stop-color="#6d5efc"/>
+    </linearGradient>
+    <linearGradient id="stand" x1="200" y1="262" x2="200" y2="334" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8d87a8"/><stop offset="1" stop-color="#4c4668"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="340" rx="112" ry="14" fill="#241a55" opacity=".13"/>
+  <path d="M38 126c0-18 14-32 32-32h260c18 0 32 14 32 32v110c0 18-14 32-32 32H70c-18 0-32-14-32-32V126z" fill="url(#frame)"/>
+  <path d="M52 126c0-12 10-22 22-22h252c12 0 22 10 22 22v108c0 12-10 22-22 22H74c-12 0-22-10-22-22V126z" fill="url(#screen)"/>
+  <path d="M60 210c46-52 90-72 132-62 38 9 60 40 90 28 22-9 40-22 58-34v66c0 10-8 18-18 18H78c-10 0-18-8-18-18z" fill="#0b0f24" opacity=".45"/>
+  <circle cx="106" cy="150" r="19" fill="#ffd166" opacity=".85"/>
+  <path d="M74 208l52-56 34 34 34-52 46 54 30-26 30 30v34H74z" fill="#6d5efc" opacity=".7"/>
+  <path d="M120 236h160" stroke="#fff" stroke-opacity=".15" stroke-width="3"/>
+  <rect x="186" y="268" width="28" height="50" fill="url(#stand)"/>
+  <path d="M138 328c0-8 6-14 14-14h96c8 0 14 6 14 14s-6 12-14 12H152c-8 0-14-4-14-12z" fill="url(#stand)"/>
+  <rect x="52" y="126" width="296" height="4" rx="2" fill="#8b7bff" opacity=".5"/>
+</svg>

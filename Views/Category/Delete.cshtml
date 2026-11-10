@@ -1,0 +1,31 @@
+@model Category
+@{
+    ViewData["Title"] = "Supprimer la catégorie";
+    var count = (int)(ViewBag.ProductCount ?? 0);
+}
+
+<div class="container admin-page">
+    <div class="confirm-card">
+        <span class="confirm-icon"><i class="bi bi-trash3"></i></span>
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Suppression</span>
+        <h1>Supprimer « @Model.CategoryName » ?</h1>
+
+        @if (count > 0)
+        {
+            <p class="text-danger"><strong>Impossible :</strong> @count produit(s) sont encore rattachés à cette catégorie. Déplacez-les ou supprimez-les d'abord.</p>
+            <div class="confirm-actions">
+                <a class="btn btn-gradient" asp-controller="Product" asp-action="Manage" asp-route-categoryId="@Model.CategoryId">Voir les produits concernés</a>
+                <a class="btn btn-ghost" asp-controller="Category" asp-action="Index">Retour</a>
+            </div>
+        }
+        else
+        {
+            <p>Cette action est irréversible. La catégorie sera définitivement supprimée.</p>
+            <form asp-controller="Category" asp-action="Delete" asp-route-id="@Model.CategoryId" method="post" class="confirm-actions">
+                @Html.AntiForgeryToken()
+                <a class="btn btn-ghost" asp-controller="Category" asp-action="Index">Annuler</a>
+                <button type="submit" class="btn btn-danger-soft"><i class="bi bi-trash3"></i> Oui, supprimer</button>
+            </form>
+        }
+    </div>
+</div>

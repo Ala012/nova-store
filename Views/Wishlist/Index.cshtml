@@ -1,0 +1,54 @@
+@model IList<WishlistItem>
+@{
+    ViewData["Title"] = "Mes favoris";
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line">
+            <a asp-controller="Home" asp-action="Index">Accueil</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Favoris</span>
+        </nav>
+        <div class="page-hero-row">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Votre wishlist</span>
+                <h1>Mes <span class="grad-text">favoris</span></h1>
+                <p>@Model.Count produit@(Model.Count > 1 ? "s" : "") sauvegardé@(Model.Count > 1 ? "s" : "") pour plus tard.</p>
+            </div>
+            <div class="page-hero-art" aria-hidden="true"><i class="bi bi-heart"></i></div>
+        </div>
+    </div>
+</section>
+
+<div class="container section">
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state empty-state-lg">
+            <span class="empty-icon"><i class="bi bi-heart"></i></span>
+            <h3>Votre liste de favoris est vide</h3>
+            <p>Cliquez sur le cœur d'un produit pour le retrouver ici.</p>
+            <a class="btn btn-gradient btn-lg" asp-controller="Product" asp-action="Index">Découvrir la boutique</a>
+        </div>
+    }
+    else
+    {
+        <div class="wishlist-grid">
+            @foreach (var item in Model)
+            {
+                if (item.Product is null) { continue; }
+                <div class="wishlist-item reveal">
+                    <partial name="_ProductCard" model="item.Product" />
+                    <form asp-controller="Wishlist" asp-action="Toggle" method="post" class="wishlist-remove-form">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.ProductId" />
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                        <button type="submit" class="wishlist-remove-btn">
+                            <i class="bi bi-x-lg"></i> Retirer des favoris
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    }
+</div>

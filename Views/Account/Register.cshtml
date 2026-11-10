@@ -1,0 +1,91 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Créer un compte";
+    var returnUrl = ViewBag.ReturnUrl as string;
+}
+
+<div class="auth-page">
+    <div class="container">
+        <div class="auth-shell">
+            <aside class="auth-visual auth-visual-register">
+                <a class="nova-brand auth-brand" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">N</span>
+                    <span class="brand-word">NOVA<span class="brand-dot">.</span></span>
+                </a>
+                <div class="auth-visual-copy">
+                    <span class="eyebrow light"><span class="eyebrow-dot"></span> Rejoignez le club</span>
+                    <h2>Votre prochaine <span>obsession</span> vous attend.</h2>
+                    <p>Créez votre compte en 30 secondes et débloquez -10% sur votre première commande.</p>
+                    <ul class="auth-benefits">
+                        <li><i class="bi bi-gift"></i> -10% de bienvenue</li>
+                        <li><i class="bi bi-heart"></i> Favoris synchronisés</li>
+                        <li><i class="bi bi-truck"></i> Livraison prioritaire</li>
+                    </ul>
+                </div>
+                <div class="auth-visual-card">
+                    <div class="auth-numbers">
+                        <div><strong>20+</strong><small>produits</small></div>
+                        <div><strong>4.9</strong><small>note moyenne</small></div>
+                        <div><strong>24h</strong><small>expédition</small></div>
+                    </div>
+                </div>
+                <div class="auth-glow" aria-hidden="true"></div>
+            </aside>
+
+            <section class="auth-card">
+                <div class="auth-card-head">
+                    <span class="eyebrow"><span class="eyebrow-dot"></span> Inscription</span>
+                    <h1>Créer un <span class="grad-text">compte</span></h1>
+                    <p>Déjà membre ? <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl">Se connecter</a></p>
+                </div>
+
+                <form asp-controller="Account" asp-action="Register" asp-route-returnUrl="@returnUrl" method="post" class="auth-form">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <label asp-for="Email" class="form-label"></label>
+                    <div class="input-icon">
+                        <i class="bi bi-envelope"></i>
+                        <input asp-for="Email" class="form-control" placeholder="vous@exemple.com" autocomplete="email" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+
+                    <label asp-for="Password" class="form-label mt-3"></label>
+                    <div class="input-icon">
+                        <i class="bi bi-lock"></i>
+                        <input asp-for="Password" class="form-control" placeholder="6 caractères minimum" autocomplete="new-password" data-password-input />
+                        <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher le mot de passe"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+
+                    <label asp-for="ConfirmPassword" class="form-label mt-3"></label>
+                    <div class="input-icon">
+                        <i class="bi bi-shield-lock"></i>
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirmez le mot de passe" autocomplete="new-password" data-password-input />
+                        <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher le mot de passe"><i class="bi bi-eye"></i></button>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+
+                    <label class="form-check nova-check mt-3">
+                        <input asp-for="AcceptTerms" class="form-check-input" />
+                        <span class="form-check-label">J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>.</span>
+                    </label>
+                    <span asp-validation-for="AcceptTerms" class="text-danger small"></span>
+
+                    <button type="submit" class="btn btn-gradient btn-lg w-100 mt-3">
+                        Créer mon compte <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                    <div class="auth-trust">
+                        <span><i class="bi bi-shield-check"></i> Données protégées</span>
+                        <span><i class="bi bi-lightning-charge"></i> Accès immédiat</span>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

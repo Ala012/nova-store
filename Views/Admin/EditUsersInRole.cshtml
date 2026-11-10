@@ -1,0 +1,55 @@
+@model List<UserRoleViewModel>
+@{
+    ViewData["Title"] = "Utilisateurs du rôle";
+    var roleId = ViewBag.RoleId as string;
+    var roleName = ViewBag.RoleName as string;
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Admin" asp-action="ListRoles">Rôles</a>
+                <i class="bi bi-chevron-right"></i>
+                <a asp-controller="Admin" asp-action="EditRole" asp-route-id="@roleId">@roleName</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Utilisateurs</span>
+            </nav>
+            <h1>Utilisateurs du rôle <span class="grad-text">@roleName</span></h1>
+            <p>Cochez les utilisateurs qui doivent bénéficier de ce rôle.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Admin" asp-action="EditRole" asp-route-id="@roleId"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <form asp-controller="Admin" asp-action="EditUsersInRole" asp-route-roleId="@roleId" method="post" class="admin-form admin-form-narrow">
+        @Html.AntiForgeryToken()
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge"><i class="bi bi-people"></i></span>
+                <div>
+                    <h4>Sélection des utilisateurs</h4>
+                    <p>@Model.Count compte(s) au total.</p>
+                </div>
+            </div>
+
+            <div class="role-user-list">
+                @for (var i = 0; i < Model.Count; i++)
+                {
+                    <label class="role-user-row">
+                        <input type="hidden" asp-for="@Model[i].UserId" />
+                        <input type="hidden" asp-for="@Model[i].UserName" />
+                        <input asp-for="@Model[i].IsSelected" class="form-check-input" />
+                        <span class="review-avatar" style="--i:#6d5efc">@DisplayText.Initials(Model[i].UserName)</span>
+                        <span class="role-user-name">@Model[i].UserName</span>
+                        <span class="role-user-check"><i class="bi bi-check2"></i></span>
+                    </label>
+                }
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a class="btn btn-ghost" asp-controller="Admin" asp-action="EditRole" asp-route-id="@roleId">Annuler</a>
+            <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-check2"></i> Mettre à jour les utilisateurs</button>
+        </div>
+    </form>
+</div>

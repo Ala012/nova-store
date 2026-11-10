@@ -1,0 +1,154 @@
+@model Order
+@{
+    ViewData["Title"] = $"Commande #{Model.Id:D5}";
+    var stage = Model.Status switch
+    {
+        OrderStatuses.Pending => 1,
+        OrderStatuses.Confirmed => 2,
+        OrderStatuses.Shipped => 3,
+        OrderStatuses.Delivered => 4,
+        _ => 0
+    };
+    var cancelled = Model.Status == OrderStatuses.Cancelled;
+}
+
+<section class="page-hero page-hero-compact">
+    <div class="container">
+        <nav class="breadcrumb-line">
+            <a asp-controller="Orders" asp-action="MyOrders">Mes commandes</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>#@Model.Id.ToString("D5")</span>
+        </nav>
+        <div class="page-hero-row">
+            <div>
+                <span class="eyebrow"><span class="eyebrow-dot"></span> Détail de la commande</span>
+                <h1>Commande <span class="grad-text">#@Model.Id.ToString("D5")</span></h1>
+                <p>Passée le @Model.OrderDate.ToString("dd/MM/yyyy à HH:mm") · @Model.Items.Sum(i => i.Quantity) article(s)</p>
+            </div>
+            <span class="status-badge status-badge-lg @OrderStatuses.CssClass(Model.Status)">@Model.Status</span>
+        </div>
+    </div>
+</section>
+
+<div class="container order-detail-layout">
+    <div class="order-detail-main">
+        @if (cancelled)
+        {
+            <div class="alert alert-danger validation-box">
+                <i class="bi bi-x-circle"></i> Cette commande a été annulée. Le stock a été restitué automatiquement.
+            </div>
+        }
+        else
+        {
+            <div class="order-timeline">
+                @{
+                    var steps = new[]
+                    {
+                        ("Commande reçue", "bi-bag-check", "Votre commande a été enregistrée."),
+                        ("Confirmée", "bi-check2-circle", "Nous avons validé votre paiement."),
+                        ("Expédiée", "bi-box-seam", "Votre colis est en route."),
+                        ("Livrée", "bi-house-check", "Votre commande est arrivée.")
+                    };
+                }
+                @for (var i = 0; i < steps.Length; i++)
+                {
+                    var n = i + 1;
+                    var state = stage > n ? "is-done" : stage == n ? "is-current" : "";
+                    <div class="timeline-step @state">
+                        <span class="timeline-dot"><i class="bi @steps[i].Item2"></i></span>
+                        <div>
+                            <strong>@steps[i].Item1</strong>
+                            <small>@steps[i].Item3</small>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="step-badge"><i class="bi bi-box-seam"></i></span>
+                <div>
+                    <h4>Articles commandés</h4>
+                    <p>@Model.Items.Count référence(s) · @Model.Items.Sum(i => i.Quantity) unité(s)</p>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table nova-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Prix unitaire</th>
+                            <th>Qté</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="table-product">
+                                        <img src="@Url.Content("~/images/" + (item.Image ?? "products/default.svg"))" alt="@item.ProductName" />
+                                        <div>
+                                            <strong>@item.ProductName</strong>
+                                            <small>@(Model.Items.Count > 1 ? "Réf. NOVA-" + item.ProductId.ToString("D4") : "Réf. NOVA-" + item.ProductId.ToString("D4"))</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@Money.Format(item.Price)</td>
+                                <td>@item.Quantity</td>
+                                <td class="text-end"><strong>@Money.Format(item.LineTotal)</strong></td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end">Total</td>
+                            <td class="text-end"><strong class="price">@Money.Format(Model.TotalAmount)</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <aside class="order-detail-side">
+        <div class="panel">
+            <h5 class="panel-title"><i class="bi bi-geo-alt"></i> Livraison</h5>
+            <div class="info-stack">
+                <div><span>Destinataire</span><strong>@Model.CustomerName</strong></div>
+                <div><span>Adresse</span><strong>@Model.Address</strong></div>
+                <div><span>Téléphone</span><strong>@Model.Phone</strong></div>
+                <div><span>E-mail</span><strong>@Model.Email</strong></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h5 class="panel-title"><i class="bi bi-credit-card"></i> Paiement</h5>
+            <div class="info-stack">
+                <div><span>Méthode</span><strong>@Model.PaymentMethod</strong></div>
+                <div><span>Statut</span><strong>@Model.Status</strong></div>
+                <div><span>Montant</span><strong class="price">@Money.Format(Model.TotalAmount)</strong></div>
+            </div>
+        </div>
+
+        <div class="panel panel-actions">
+            <a class="btn btn-gradient w-100" asp-controller="Orders" asp-action="Invoice" asp-route-id="@Model.Id">
+                <i class="bi bi-download"></i> Télécharger la facture
+            </a>
+            @if (Model.Status is OrderStatuses.Pending or OrderStatuses.Confirmed)
+            {
+                <form asp-controller="Orders" asp-action="Cancel" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger-soft w-100" data-confirm="Annuler cette commande ?">
+                        <i class="bi bi-x-circle"></i> Annuler la commande
+                    </button>
+                </form>
+            }
+            <a class="btn btn-ghost w-100" asp-controller="Orders" asp-action="MyOrders">
+                <i class="bi bi-arrow-left"></i> Retour aux commandes
+            </a>
+        </div>
+    </aside>
+</div>

@@ -1,0 +1,85 @@
+@model Product
+@{
+    var accent = Model.Category?.Accent ?? "#6d5efc";
+    var imagePath = Url.Content("~/images/" + Model.Image);
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var isAuth = User.Identity?.IsAuthenticated == true;
+}
+
+<article class="product-card reveal @(Model.InStock ? null : "is-soldout")" style="--accent:@accent">
+    <div class="product-media">
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId" class="media-link" aria-label="@Model.Name">
+            <img src="@imagePath" alt="@Model.Name" loading="lazy" />
+        </a>
+
+        <div class="product-badges">
+            @if (Model.DiscountPercent > 0)
+            {
+                <span class="badge-pill badge-promo">-@Model.DiscountPercent%</span>
+            }
+            @if (Model.IsNew)
+            {
+                <span class="badge-pill badge-new">Nouveau</span>
+            }
+            @if (Model.LowStock)
+            {
+                <span class="badge-pill badge-low">Plus que @Model.QteStock</span>
+            }
+        </div>
+
+        @if (isAuth)
+        {
+            <form asp-controller="Wishlist" asp-action="Toggle" method="post" class="wishlist-form" data-wishlist-form>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.ProductId" />
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                <button type="submit" class="wish-btn" title="Ajouter aux favoris" aria-label="Ajouter aux favoris">
+                    <i class="bi bi-heart"></i>
+                </button>
+            </form>
+        }
+        else
+        {
+            <a class="wish-btn" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl"
+               title="Connectez-vous pour ajouter aux favoris" aria-label="Ajouter aux favoris">
+                <i class="bi bi-heart"></i>
+            </a>
+        }
+
+        @if (Model.InStock)
+        {
+            <div class="quick-add">
+                <form asp-controller="Panier" asp-action="AddProduct" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ProductId" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <button type="submit" class="btn btn-gradient w-100">
+                        <i class="bi bi-bag-plus"></i> Ajouter au panier
+                    </button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="soldout-veil"><span>Épuisé</span></div>
+        }
+    </div>
+
+    <div class="product-body">
+        <span class="product-cat">@Model.Category?.CategoryName</span>
+        <a class="product-title" asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductId">
+            @Model.Name
+        </a>
+        <div class="rating-row">
+            <span class="stars" aria-label="Note @Model.RatingAverage sur 5">@Money.Stars(Model.RatingAverage)</span>
+            <span class="rating-count">@Model.RatingAverage.ToString("0.0") (@Model.RatingCount)</span>
+        </div>
+        <div class="product-price-row">
+            <span class="price">@Money.Format(Model.Price)</span>
+            @if (Model.OldPrice.HasValue && Model.OldPrice > Model.Price)
+            {
+                <span class="old-price">@Money.Format(Model.OldPrice.Value)</span>
+            }
+        </div>
+    </div>
+</article>

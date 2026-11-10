@@ -1,0 +1,24 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="mat" x1="100" y1="180" x2="300" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff9a8b"/><stop offset=".5" stop-color="#f26d7d"/><stop offset="1" stop-color="#b83b5e"/>
+    </linearGradient>
+    <linearGradient id="roll" x1="250" y1="150" x2="330" y2="280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffb4a2"/><stop offset=".6" stop-color="#f26d7d"/><stop offset="1" stop-color="#9e2a4a"/>
+    </linearGradient>
+    <linearGradient id="strap" x1="140" y1="190" x2="200" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd166"/><stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="342" rx="120" ry="14" fill="#241a55" opacity=".13"/>
+  <path d="M104 238c0-10 8-18 18-18h108v56H122c-10 0-18-8-18-18v-20z" fill="url(#mat)"/>
+  <ellipse cx="230" cy="262" rx="26" ry="28" fill="#d94f6c"/>
+  <path d="M104 238c0-10 8-18 18-18h108v12H104v-12z" fill="#fff" opacity=".2"/>
+  <ellipse cx="284" cy="238" rx="42" ry="44" fill="url(#roll)"/>
+  <ellipse cx="284" cy="238" rx="20" ry="22" fill="#9e2a4a"/>
+  <ellipse cx="284" cy="238" rx="9" ry="11" fill="#4a1024"/>
+  <path d="M130 220v56M150 220v56" stroke="#ffd1c4" stroke-width="3" opacity=".35"/>
+  <path d="M164 244c20 16 40 20 62 12" stroke="url(#strap)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M226 256l-12 26M226 256l14 24" stroke="#f59e0b" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="284" cy="238" r="34" stroke="#fff" stroke-opacity=".2" stroke-width="3"/>
+</svg>

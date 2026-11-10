@@ -1,0 +1,34 @@
+@model EditViewModel
+@{
+    ViewData["Title"] = "Modifier le produit";
+}
+
+<div class="container admin-page">
+    <div class="admin-header">
+        <div>
+            <nav class="breadcrumb-line">
+                <a asp-controller="Product" asp-action="Manage">Produits</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>@Model.Name</span>
+            </nav>
+            <h1>Modifier <span class="grad-text">le produit</span></h1>
+            <p>Mettez à jour les informations, le stock ou le visuel du produit.</p>
+        </div>
+        <a class="btn btn-ghost" asp-controller="Product" asp-action="Manage"><i class="bi bi-arrow-left"></i> Retour</a>
+    </div>
+
+    <form asp-controller="Product" asp-action="Edit" method="post" enctype="multipart/form-data" class="admin-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="ExistingImagePath" />
+        <partial name="_ProductFormFields" model="Model" />
+        <div class="form-actions">
+            <a class="btn btn-ghost" asp-controller="Product" asp-action="Manage">Annuler</a>
+            <button type="submit" class="btn btn-gradient btn-lg"><i class="bi bi-check2"></i> Enregistrer les modifications</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
